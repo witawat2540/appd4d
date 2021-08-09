@@ -15,6 +15,14 @@ class MyWidget {
       );
     }
   }
+ static AppBar buildAppBar() {
+    return AppBar(
+      title: Text('ONDE'),
+      centerTitle: true,
+    );
+  }
+
+  static EdgeInsets buildEdgeInsets() => EdgeInsets.symmetric(horizontal: 10, vertical: 7);
 }
 
 class myh extends StatelessWidget {
@@ -54,10 +62,34 @@ class Mysutitle extends StatelessWidget {
     return Row(
       children: [
         Container(
+          width: MediaQuery.of(context).size.width - 80,
+          margin: EdgeInsets.symmetric(vertical: vertical),
+          //color: Colors.black45,
+          child: Text("$text",),
+        ),
+      ],
+    );
+  }
+}
+
+class Mysutitle14 extends StatelessWidget {
+  final String text;
+  final double vertical;
+
+  const Mysutitle14({
+    Key? key,
+    required this.text,required this.vertical,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
           width: MediaQuery.of(context).size.width - 100,
           margin: EdgeInsets.symmetric(vertical: vertical),
           //color: Colors.black45,
-          child: Text("$text", style: Theme.of(context).textTheme.subtitle),
+          child: Text("$text",style: Theme.of(context).textTheme.subtitle,),
         ),
       ],
     );
@@ -110,6 +142,62 @@ class Mytexth extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.w600),
         ),
       ],
+    );
+  }
+}
+
+class Mytexth2 extends StatelessWidget {
+  final VoidCallback? onTap;
+  final String text;
+  final bool onbtn;
+
+  const Mytexth2({
+    Key? key,
+    this.onTap,
+    required this.text, this.onbtn =false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          '$text',
+          style: Theme.of(context).textTheme.body2!.apply(fontWeightDelta: 10),
+        ),
+        if(!onbtn)
+          IconButton(
+            splashRadius: 20,
+            onPressed: onTap,
+            icon: Icon(Icons.edit_outlined),
+          )
+      ],
+    );
+  }
+}
+
+class Mybtn extends StatelessWidget {
+  final Color? color;
+  final String text;
+  final VoidCallback? ontap;
+
+  const Mybtn({
+    Key? key,
+    this.color,
+    required this.text, this.ontap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 49,
+      child: ElevatedButton(
+        style: color == null ? null : ElevatedButton.styleFrom(primary: color),
+        child: Text('$text'),
+        onPressed: ontap,
+      ),
     );
   }
 }

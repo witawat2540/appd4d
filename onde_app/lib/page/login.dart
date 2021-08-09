@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
                 child: Column(
                   children: [
                     myh(text: "เข้าสู่ระบบสำหรับคนพิการ",),
-                    Mysutitle(text: 'ระบบบริหารจัดการอุปกรณ์และเครื่องมือด้าน ICT สำหรับคนพิการ',vertical: 10,),
+                    Mysutitle14(text: 'ระบบบริหารจัดการอุปกรณ์และเครื่องมือด้าน ICT สำหรับคนพิการ',vertical: 10,),
                     MyWidget.buildSizedBox('h', 25),
                     mytextfield(
                       hintText: 'อีเมล์',

@@ -10,6 +10,7 @@ class mytextfield extends StatelessWidget {
   final Function? validator, onChanged;
   final TextInputType? keyboardType;
   final Function? onSave;
+  final int? maxLines;
   final TextEditingController? controller;
   final bool readOnly;
 
@@ -28,7 +29,7 @@ class mytextfield extends StatelessWidget {
     this.readOnly = false,
     this.maxLength,
     this.onChanged,
-    this.labelText,
+    this.labelText, this.maxLines,
     // this.maxLines,
   }) : super(key: key);
 
@@ -45,6 +46,7 @@ class mytextfield extends StatelessWidget {
         //validator: validator,
         //onSaved: onSave,
         obscuringCharacter: '*',
+        maxLines: maxLines,
         style: Theme.of(context).textTheme.bodyText2,
         keyboardType: keyboardType,
         decoration: InputDecoration(

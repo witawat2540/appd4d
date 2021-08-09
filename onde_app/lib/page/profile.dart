@@ -13,7 +13,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+      padding: MyWidget.buildEdgeInsets(),
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -31,7 +31,7 @@ class _ProfileState extends State<Profile> {
                 text: 'เพิ่มข้อมูลคู่สมรส',
               ),
               MyWidget.buildSizedBox('h', 18),
-              Mytexth(
+              Mytexth2(
                 text: 'ข้อมูลส่วนตัว',
                 onTap: () {},
               ),
@@ -71,7 +71,7 @@ class _ProfileState extends State<Profile> {
                 title: 'ประเภทคนพิการ',
               ),
               MyWidget.buildSizedBox('h', 18),
-              Mytexth(
+              Mytexth2(
                 text: 'ที่อยู่',
                 onTap: () {},
               ),
@@ -159,6 +159,7 @@ class body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           child: Container(
@@ -169,72 +170,22 @@ class body extends StatelessWidget {
             ),
           ),
         ),
-        MyWidget.buildSizedBox('w', 20),
+        MyWidget.buildSizedBox('w', 10),
         Expanded(
           child: edit
               ? widget!
               : Container(
                   alignment: Alignment.centerLeft,
+                  //width: MediaQuery.of(context).size.width - 200,
+                  //color: Colors.black12,
                   child: Text(
                     '$text',
+                    maxLines: 2,
                     //style: Theme.of(context).textTheme,
                   ),
                 ),
         )
       ],
-    );
-  }
-}
-
-class Mytexth extends StatelessWidget {
-  final VoidCallback? onTap;
-  final String text;
-
-  const Mytexth({
-    Key? key,
-    this.onTap,
-    required this.text,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          '$text',
-          style: Theme.of(context).textTheme.body2!.apply(fontWeightDelta: 10),
-        ),
-        IconButton(
-          splashRadius: 20,
-          onPressed: onTap,
-          icon: Icon(Icons.edit_outlined),
-        )
-      ],
-    );
-  }
-}
-
-class Mybtn extends StatelessWidget {
-  final Color? color;
-  final String text;
-
-  const Mybtn({
-    Key? key,
-    this.color,
-    required this.text,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 49,
-      child: ElevatedButton(
-        style: color == null ? null : ElevatedButton.styleFrom(primary: color),
-        child: Text('$text'),
-        onPressed: () {},
-      ),
     );
   }
 }

@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:onde_app/page/contract_document.dart';
+import 'package:onde_app/page/device_details.dart';
+import 'package:onde_app/page/devicereturn.dart';
 import 'package:onde_app/page/firstpage.dart';
+import 'package:onde_app/page/listrequest.dart';
 import 'package:onde_app/page/login.dart';
 import 'package:onde_app/page/profile.dart';
 import 'package:onde_app/page/register.dart';
+import 'package:onde_app/page/report.dart';
+import 'package:onde_app/page/representative.dart';
+import 'package:onde_app/page/training.dart';
 
 class mydrawer extends StatelessWidget {
   final gotopage;
@@ -74,23 +81,44 @@ class mydrawer extends StatelessWidget {
           text: 'ข้อมูลส่วนตัว',
           ontap: () {
             Navigator.pop(context);
-            gotopage(Profile());
+            //gotopage(Profile());
+            gotopage(Representative());
           },
         ),
         mylisticon(
           text: 'ระบบยืมอุปกรณ์',
+          ontap: (){
+            Navigator.pop(context);
+            //gotopage(DeviceDetail());
+            gotopage(Training());
+          },
+
         ),
         mylisticon(
           text: 'กรอกแบบคำขอยืม/รับอุปกรณ์',
+          ontap: (){
+            Navigator.pop(context);
+            gotopage(ListRequest());
+          },
         ),
         mylisticon(
           text: 'ผลการพิจารณา',
         ),
         mylisticon(
           text: 'ส่งคืนอุปกรณ์',
+          ontap: (){
+            Navigator.pop(context);
+            //gotopage(ContractDocument());
+            gotopage(DeviceReturn());
+          },
         ),
         mylisticon(
           text: 'แจ้งปัญหาการใช้งาน',
+          ontap: (){
+            Navigator.pop(context);
+            //gotopage(ContractDocument());
+            gotopage(Report());
+          },
         ),
         mylisticon(
           text: 'ตอบแบบสอบถาม',

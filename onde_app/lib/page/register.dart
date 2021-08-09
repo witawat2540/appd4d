@@ -25,7 +25,7 @@ class _ResisterState extends State<Resister> {
             child: Column(
               children: [
                 myh(text: 'สมัครสมาชิก'),
-                Mysutitle(
+                Mysutitle14(
                   vertical: 10,
                     text:
                         'ระบบบริหารจัดการอุปกรณ์และเครื่องมือด้าน ICT สำหรับคนพิการ'),
