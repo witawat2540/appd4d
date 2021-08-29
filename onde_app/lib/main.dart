@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
           ),
           primarySwatch: colorCustom,
         ),
-        home: HomePage(),
+        home: Login(),
       ),
     );
   }

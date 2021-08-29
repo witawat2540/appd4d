@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
         title: Text('ONDE'),
         centerTitle: true,
       ),
-      drawer: mydrawer(gotopage: gotopage,),
+      drawer: MyDrawer(gotopage: gotopage,),
       body: page,
     );
   }

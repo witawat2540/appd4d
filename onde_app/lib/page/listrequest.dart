@@ -20,10 +20,10 @@ class _ListRequestState extends State<ListRequest> {
           child: Column(
             children: [
               Mytitle(
-                text: 'เอกสารสัญญา/หนังสือค้ำประกันดำเนินการแล้ว',
+                text: 'รายการแบบคำขอยืม',
               ),
               Mysutitle(
-                text: 'รายการเอกสารสัญญา/หนังสือค้ำประกันดำเนินการแล้ว',
+                text: 'รายการแบบคำขอยืมอุปกรณ์และเครื่องมือ ฯ (ทก.01)',
                 vertical: 5,
               ),
               MyWidget.buildSizedBox('h', 5),

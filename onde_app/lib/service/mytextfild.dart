@@ -9,7 +9,7 @@ class mytextfield extends StatelessWidget {
   final bool obscureText;
   final Function? validator, onChanged;
   final TextInputType? keyboardType;
-  final Function? onSave;
+  final Function(String?)? onSave;
   final int? maxLines;
   final TextEditingController? controller;
   final bool readOnly;
@@ -43,8 +43,8 @@ class mytextfield extends StatelessWidget {
         onTap: onTap,
         //onChanged: onChanged,
         obscureText: obscureText,
-        //validator: validator,
-        //onSaved: onSave,
+        validator: validator as String? Function(String? value)?,
+        onSaved: onSave,
         obscuringCharacter: '*',
         maxLines: maxLines,
         style: Theme.of(context).textTheme.bodyText2,
@@ -52,12 +52,86 @@ class mytextfield extends StatelessWidget {
         decoration: InputDecoration(
           labelText: labelText,
           hintText: hintText,
-          errorStyle: TextStyle(color: Colors.redAccent),
+          errorStyle: TextStyle(color: Colors.redAccent,fontSize: 13),
           labelStyle: TextStyle(color: MyColors.colorText_label),
           //contentPadding: EdgeInsets.all(0),
           hintStyle: TextStyle(color: MyColors.colorTexthittext),
           contentPadding:
               new EdgeInsets.symmetric(vertical: 18.0, horizontal: 16.0),
+          counterText: '',
+          border: new OutlineInputBorder(
+            //borderRadius: new BorderRadius.circular(25.0),
+            borderSide: new BorderSide(),
+          ),
+          // border: InputBorder.none,
+          suffixIcon: Icon(suffixIcon),
+        ),
+        //maxLines: maxLines,
+        maxLength: maxLength,
+      ),
+    );
+  }
+}
+
+
+class MyTextFieldPass extends StatelessWidget {
+  final String? hintText, labelText;
+  final suffixIcon;
+  final VoidCallback? onTap;
+  final int? maxLength;
+  final bool obscureText;
+  final Function? validator, onChanged;
+  final TextInputType? keyboardType;
+  final Function(String?)? onSave;
+  final int? maxLines;
+  final TextEditingController? controller;
+  final bool readOnly;
+
+  //final int maxLines;
+
+  const MyTextFieldPass({
+    Key? key,
+    this.hintText,
+    this.suffixIcon,
+    this.obscureText = false,
+    this.validator,
+    this.keyboardType,
+    this.onSave,
+    this.onTap,
+    this.controller,
+    this.readOnly = false,
+    this.maxLength,
+    this.onChanged,
+    this.labelText, this.maxLines,
+    // this.maxLines,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      //decoration: BoxDecoration(),
+      child: TextFormField(
+        readOnly: readOnly,
+        controller: controller,
+        onTap: onTap,
+        //onChanged: onChanged,
+        obscureText: obscureText,
+        validator: validator as String? Function(String? value)?,
+        //validator: validator,
+        onSaved: onSave,
+        obscuringCharacter: '*',
+        //maxLines: maxLines,
+        style: Theme.of(context).textTheme.bodyText2,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+          errorStyle: TextStyle(color: Colors.redAccent,fontSize: 13),
+          labelStyle: TextStyle(color: MyColors.colorText_label),
+          //contentPadding: EdgeInsets.all(0),
+          hintStyle: TextStyle(color: MyColors.colorTexthittext),
+          contentPadding:
+          new EdgeInsets.symmetric(vertical: 18.0, horizontal: 16.0),
           border: new OutlineInputBorder(
             //borderRadius: new BorderRadius.circular(25.0),
             borderSide: new BorderSide(),

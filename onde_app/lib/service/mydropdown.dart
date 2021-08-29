@@ -6,6 +6,7 @@ class mydropdown extends StatelessWidget {
   final value;
   final bool line;
   final List<DropdownMenuItem<Object>>? listdata;
+  final Function(dynamic)? onChanged;
 
   //final Function onChanged, validator;
 
@@ -16,13 +17,12 @@ class mydropdown extends StatelessWidget {
     //this.onChanged,
     //this.validator,
     this.value,
-    this.line = false,
+    this.line = false, this.onChanged,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField(
-      autovalidate: false,
       value: value,
       style: Theme.of(context).textTheme.bodyText2,
       decoration: InputDecoration(
@@ -51,7 +51,7 @@ class mydropdown extends StatelessWidget {
             ),
           )
           .toList(),*/
-      //onChanged: onChanged,
+      onChanged: onChanged,
       /*validator: validator == null
           ? null
           : (value) {

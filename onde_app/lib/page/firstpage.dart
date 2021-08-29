@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:onde_app/model/dashboardmodel.dart';
+import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/service/mycolors.dart';
+import 'package:onde_app/service/myunitity.dart';
 import 'package:onde_app/service/mywidget.dart';
 
 class FirstPage extends StatefulWidget {
@@ -10,6 +15,24 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  Dashboardmodel _dashboardModel = Dashboardmodel();
+
+  Future<void> getDashboard() async {
+    await ConnectAPI().get('dashboard').then((value) {
+      if (value.statusCode == 200 || jsonDecode(value.body)['status'] == true) {
+        setState(() {
+          _dashboardModel = dashboardmodelFromJson(value.body);
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    this.getDashboard();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,13 +66,15 @@ class _FirstPageState extends State<FirstPage> {
                   mycard(
                     color: Color(0xff1CB485),
                     name: 'รายการอุปกรณ์',
-                    count: '3,772',
+                    count:
+                        '${Unitity.f.format(_dashboardModel.data?.totalAssets ?? 0)}',
                   ),
                   MyWidget.buildSizedBox('w', 17),
                   mycard(
                     color: Color(0xffE632B6),
                     name: 'สมาชิก',
-                    count: '16',
+                    count:
+                        '${Unitity.f.format(_dashboardModel.data?.totalUsers ?? 0)}',
                   ),
                 ],
               ),
@@ -59,13 +84,15 @@ class _FirstPageState extends State<FirstPage> {
                   mycard(
                     color: Color(0xffFCAC17),
                     name: 'การยืม',
-                    count: '6',
+                    count:
+                        '${Unitity.f.format(_dashboardModel.data?.totalBookings ?? 0)}',
                   ),
                   MyWidget.buildSizedBox('w', 17),
                   mycard(
                     color: Color(0xff2C8FE3),
                     name: 'กิจกรรม',
-                    count: '5',
+                    count:
+                        '${Unitity.f.format(_dashboardModel.data?.totalEvents ?? 0)}',
                   ),
                 ],
               ),
@@ -76,12 +103,38 @@ class _FirstPageState extends State<FirstPage> {
                     'ข่าวสารประชาสัมพันธ์',
                     style: TextStyle(
                         color: MyColors.colorText_label,
-                        fontWeight: FontWeight.w600,fontSize: 18),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18),
                   )
                 ],
               ),
               MyWidget.buildSizedBox('h', 17),
-              image_news(
+              Column(
+                children: _dashboardModel.data?.news?.map((e) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          image_news(
+                            image:
+                                '${_dashboardModel.data!.path}/${e.coverName}',
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 5),
+                            width: MediaQuery.of(context).size.width,
+                            //color: Colors.black12,
+                            child:Text(
+                              '${e.title}',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          MyWidget.buildSizedBox('h', 17),
+                        ],
+                      );
+                    }).toList() ??
+                    [],
+              )
+              /*image_news(
                 image:
                     'https://www.prachachat.net/wp-content/uploads/2020/07/KIT_3164.jpg',
               ),
@@ -93,21 +146,7 @@ class _FirstPageState extends State<FirstPage> {
                         'สดช.จัดอบรมการสร้างการรับรู้การปฏิบัติตามแผนดำเนิน',
                       ),
                     ],
-                  )),
-              MyWidget.buildSizedBox('h', 17),
-              image_news(
-                image:
-                    'https://www.prachachat.net/wp-content/uploads/2020/07/KIT_3164.jpg',
-              ),
-              Container(
-                  margin: EdgeInsets.symmetric(vertical: 5),
-                  child: Row(
-                    children: [
-                      Text(
-                        'สดช.จัดอบรมการสร้างการรับรู้การปฏิบัติตามแผนดำเนิน',
-                      ),
-                    ],
-                  ))
+                  ))*/
             ],
           ),
         ),
@@ -118,12 +157,13 @@ class _FirstPageState extends State<FirstPage> {
 
 class mycard extends StatelessWidget {
   final Color color;
-  final String name,count;
+  final String name, count;
 
   const mycard({
     Key? key,
     required this.color,
-    required this.name,required this.count,
+    required this.name,
+    required this.count,
   }) : super(key: key);
 
   @override
@@ -145,10 +185,8 @@ class mycard extends StatelessWidget {
             ),
             Text(
               '$count',
-              style: Theme.of(context)
-                  .textTheme
-                  .title!
-                  .apply(color: Colors.white),
+              style:
+                  Theme.of(context).textTheme.title!.apply(color: Colors.white),
             ),
           ],
         ),

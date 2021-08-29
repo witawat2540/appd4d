@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'mycolors.dart';
 
@@ -15,14 +16,44 @@ class MyWidget {
       );
     }
   }
- static AppBar buildAppBar() {
+
+  static AppBar buildAppBar() {
     return AppBar(
       title: Text('ONDE'),
       centerTitle: true,
     );
   }
 
-  static EdgeInsets buildEdgeInsets() => EdgeInsets.symmetric(horizontal: 10, vertical: 7);
+  static void showInSnackBar(
+      String value,
+      Color stColor,
+      GlobalKey<ScaffoldState> _scaffoldKey,
+      Color bgColor,
+      int seconds,
+      IconData icon) {
+    _scaffoldKey.currentState!.showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      elevation: 10,
+      content: Row(
+        children: [
+          Icon(
+            icon,
+            color: Colors.white,
+          ),
+          buildSizedBox('w', 20),
+          Text(
+            value,
+            style: GoogleFonts.prompt(color: stColor, fontSize: 17),
+          ),
+        ],
+      ),
+      backgroundColor: bgColor,
+      duration: Duration(seconds: seconds),
+    ));
+  }
+
+  static EdgeInsets buildEdgeInsets() =>
+      EdgeInsets.symmetric(horizontal: 10, vertical: 7);
 }
 
 class myh extends StatelessWidget {
@@ -54,7 +85,8 @@ class Mysutitle extends StatelessWidget {
 
   const Mysutitle({
     Key? key,
-    required this.text,required this.vertical,
+    required this.text,
+    required this.vertical,
   }) : super(key: key);
 
   @override
@@ -65,7 +97,9 @@ class Mysutitle extends StatelessWidget {
           width: MediaQuery.of(context).size.width - 80,
           margin: EdgeInsets.symmetric(vertical: vertical),
           //color: Colors.black45,
-          child: Text("$text",),
+          child: Text(
+            "$text",
+          ),
         ),
       ],
     );
@@ -78,7 +112,8 @@ class Mysutitle14 extends StatelessWidget {
 
   const Mysutitle14({
     Key? key,
-    required this.text,required this.vertical,
+    required this.text,
+    required this.vertical,
   }) : super(key: key);
 
   @override
@@ -89,7 +124,10 @@ class Mysutitle14 extends StatelessWidget {
           width: MediaQuery.of(context).size.width - 100,
           margin: EdgeInsets.symmetric(vertical: vertical),
           //color: Colors.black45,
-          child: Text("$text",style: Theme.of(context).textTheme.subtitle,),
+          child: Text(
+            "$text",
+            style: Theme.of(context).textTheme.subtitle,
+          ),
         ),
       ],
     );
@@ -154,7 +192,8 @@ class Mytexth2 extends StatelessWidget {
   const Mytexth2({
     Key? key,
     this.onTap,
-    required this.text, this.onbtn =false,
+    required this.text,
+    this.onbtn = false,
   }) : super(key: key);
 
   @override
@@ -166,7 +205,7 @@ class Mytexth2 extends StatelessWidget {
           '$text',
           style: Theme.of(context).textTheme.body2!.apply(fontWeightDelta: 10),
         ),
-        if(!onbtn)
+        if (!onbtn)
           IconButton(
             splashRadius: 20,
             onPressed: onTap,
@@ -185,7 +224,8 @@ class Mybtn extends StatelessWidget {
   const Mybtn({
     Key? key,
     this.color,
-    required this.text, this.ontap,
+    required this.text,
+    this.ontap,
   }) : super(key: key);
 
   @override

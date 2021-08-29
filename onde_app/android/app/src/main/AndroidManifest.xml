@@ -2,6 +2,7 @@
     package="com.example.onde_app">
    <application
         android:label="onde_app"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
