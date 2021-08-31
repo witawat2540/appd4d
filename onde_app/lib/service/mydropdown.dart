@@ -25,6 +25,8 @@ class mydropdown extends StatelessWidget {
     return DropdownButtonFormField(
       value: value,
       style: Theme.of(context).textTheme.bodyText2,
+      isExpanded: true,
+      //isDense: true,
       decoration: InputDecoration(
         labelText: '$label',
         //hintText: hintText,

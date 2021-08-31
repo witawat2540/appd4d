@@ -52,6 +52,34 @@ class MyWidget {
     ));
   }
 
+  static void showInSnackBarContext(
+      String value,
+      Color stColor,
+      BuildContext context,
+      Color bgColor,
+      int seconds,
+      IconData icon) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
+      elevation: 10,
+      content: Row(
+        children: [
+          Icon(
+            icon,
+            color: Colors.white,
+          ),
+          buildSizedBox('w', 20),
+          Text(
+            value,
+            style: GoogleFonts.prompt(color: stColor, fontSize: 17),
+          ),
+        ],
+      ),
+      backgroundColor: bgColor,
+      duration: Duration(seconds: seconds),
+    ));
+  }
+
   static EdgeInsets buildEdgeInsets() =>
       EdgeInsets.symmetric(horizontal: 10, vertical: 7);
 }
@@ -185,15 +213,16 @@ class Mytexth extends StatelessWidget {
 }
 
 class Mytexth2 extends StatelessWidget {
-  final VoidCallback? onTap;
+  final VoidCallback? onTap,onClose;
   final String text;
   final bool onbtn;
+  final bool statusEdit;
 
   const Mytexth2({
     Key? key,
     this.onTap,
     required this.text,
-    this.onbtn = false,
+    this.onbtn = false, this.statusEdit = false, this.onClose,
   }) : super(key: key);
 
   @override
@@ -206,11 +235,26 @@ class Mytexth2 extends StatelessWidget {
           style: Theme.of(context).textTheme.body2!.apply(fontWeightDelta: 10),
         ),
         if (!onbtn)
-          IconButton(
+          Row(
+            children: [
+              IconButton(
+                splashRadius: 20,
+                onPressed: onTap,
+                icon: Icon(statusEdit?Icons.save:Icons.edit_outlined),
+              ),
+              if(statusEdit)
+                IconButton(
+                  splashRadius: 20,
+                  onPressed: onClose,
+                  icon: Icon(Icons.close),
+                ),
+            ],
+          )
+          /*IconButton(
             splashRadius: 20,
             onPressed: onTap,
-            icon: Icon(Icons.edit_outlined),
-          )
+            icon: Icon(statusEdit?Icons.save:Icons.edit_outlined),
+          )*/
       ],
     );
   }

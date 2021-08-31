@@ -361,23 +361,19 @@ class mylisticon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: 'hero-rectangle',
-      transitionOnUserGestures: true,
-      child: ListTile(
-        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              '$text',
-              style: Theme.of(context).textTheme.body1,
-            ),
-            Icon(Icons.navigate_next)
-          ],
-        ),
-        onTap: ontap,
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            '$text',
+            style: Theme.of(context).textTheme.body1,
+          ),
+          Icon(Icons.navigate_next)
+        ],
       ),
+      onTap: ontap,
     );
   }
 }

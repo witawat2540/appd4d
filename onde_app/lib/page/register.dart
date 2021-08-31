@@ -124,7 +124,7 @@ class _ResisterState extends State<Resister> {
 
   @override
   void initState() {
-    //this.getDisabilityType();
+    this.getDisabilityType();
     super.initState();
   }
 
@@ -233,7 +233,7 @@ class _ResisterState extends State<Resister> {
                                   controller: modelData.email,
                                   keyboardType: TextInputType.emailAddress,
                                   hintText: 'อีเมล์',
-                                  validator: MyValidate.checkEmpty,
+                                  validator: MyValidate.checkTextEmail,
                                   /* onSave: (String? value){
                         setState(() {
                           modelData.email = value;
@@ -282,6 +282,7 @@ class _ResisterState extends State<Resister> {
                                   labelText: 'เลขบัตรประจำตัวคนพิการ',
                                   hintText: 'เลขบัตรประจำตัวคนพิการ',
                                   keyboardType: TextInputType.number,
+                                  maxLength: 9,
                                   controller: modelData.pwdId,
                                 ),
                                 MyWidget.buildSizedBox('h', 30),

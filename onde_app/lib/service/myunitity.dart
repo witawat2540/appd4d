@@ -11,4 +11,16 @@ class Unitity {
       builder: (context) => _page,
     );
   }
+
+  static Future<DateTime?> selectDate(BuildContext context,DateTime date) async {
+    //print(date);
+    DateTime? _select = await showDatePicker(
+      context: context,
+      firstDate: DateTime(1990),
+      initialDate: DateTime.now(),
+      currentDate: date,
+      lastDate: DateTime.now(),
+    );
+    return _select;
+  }
 }
