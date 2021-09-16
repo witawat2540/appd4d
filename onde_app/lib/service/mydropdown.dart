@@ -7,6 +7,7 @@ class mydropdown extends StatelessWidget {
   final bool line;
   final List<DropdownMenuItem<Object>>? listdata;
   final Function(dynamic)? onChanged;
+  final String? Function(Object?)? validator;
 
   //final Function onChanged, validator;
 
@@ -15,7 +16,7 @@ class mydropdown extends StatelessWidget {
     this.label = '',
     this.listdata,
     //this.onChanged,
-    //this.validator,
+    this.validator,
     this.value,
     this.line = false, this.onChanged,
   }) : super(key: key);
@@ -54,6 +55,7 @@ class mydropdown extends StatelessWidget {
           )
           .toList(),*/
       onChanged: onChanged,
+      validator: validator,
       /*validator: validator == null
           ? null
           : (value) {

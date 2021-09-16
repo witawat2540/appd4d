@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,13 +22,21 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
   ProfileModel _profileModel = ProfileModel();
   AddressModel _addressModel = AddressModel();
   String? nameDisabilityType = '';
   List<Map<String, dynamic>> disabilityType = [];
   bool editProfile = false,
-      statusChanged = false;
+      statusChanged = false,
+      editAddress = false,
+      statusAddress = false;
   List dataPrefixName = [];
+  List dataProvince = [];
+  List dataDistrict = [];
+  List dataSubDistrict = [];
+  List dataEducation = [];
+  List dataEducDistrict = [];
 
   //GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
 
@@ -49,7 +58,7 @@ class _ProfileState extends State<Profile> {
       if (value.statusCode == 200 || jsonDecode(value.body)['status'] == true) {
         setState(() {
           disabilityType =
-          List<Map<String, dynamic>>.from(jsonDecode(value.body)['data']);
+              List<Map<String, dynamic>>.from(jsonDecode(value.body)['data']);
         });
       }
     });
@@ -66,6 +75,13 @@ class _ProfileState extends State<Profile> {
     print(value);
     setState(() {
       statusChanged = true;
+    });
+  }
+
+  textAddress(String? value) {
+    //print(value);
+    setState(() {
+      statusAddress = true;
     });
   }
 
@@ -89,14 +105,104 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  @override
-  void initState() {
-    this.getProfile();
-    MyFunction.getPrefix().then((value) {
+
+  Future<void> sendUpdateAddress() async {
+    //print(jsonEncode(modelData.toJson()));
+    if(_keyForm.currentState!.validate()){
+      await ConnectAPI()
+          .postHeaders(jsonEncode(_addressModel.toJson()), 'update-profile-address')
+          .then((value) async {
+        if (value.statusCode == 200) {
+          MyWidget.showInSnackBarContext('บันทึกสำเร็จ', Colors.white, context,
+              MyColors.colorText_bule, 2, Icons.check_circle);
+          statusAddress = false;
+          this.getProfile();
+        } else {
+          MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+              Colors.redAccent, 2, Icons.close);
+        }
+      }).catchError((onError) {
+        MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+            Colors.redAccent, 2, Icons.close);
+      });
+    }
+  }
+
+  Future setData() async {
+    await MyFunction.getPrefix().then((value) {
       setState(() {
         dataPrefixName = value;
       });
     });
+    await MyFunction.getProvince().then((value) {
+      setState(() {
+        dataProvince = value;
+        //
+
+        //print(idProvice);
+      });
+    });
+    _addressModel.idProvince = await dataProvince
+        .where((element) => element['name_th'] == _addressModel.province)
+        .first['id'];
+    setState(() {});
+
+    await MyFunction.getDistrict(_addressModel.idProvince).then((value) {
+      setState(() {
+        dataDistrict = value;
+      });
+    });
+    if (_addressModel.district != null) {
+      _addressModel.idDistrict = await dataDistrict
+          .where((element) => element['name_th'] == _addressModel.district)
+          .first['id'];
+      setState(() {});
+    }
+    await MyFunction.getSubDistrict(_addressModel.idDistrict).then((value) {
+      setState(() {
+        dataSubDistrict = value;
+      });
+    });
+    if (_addressModel.subDistrict != null) {
+      _addressModel.idSubDistrict = await dataSubDistrict
+          .where((element) => element['name_th'] == _addressModel.subDistrict)
+          .first['id'];
+      setState(() {});
+    }
+
+    await MyFunction.getZipcode(_addressModel.idSubDistrict).then((value) {
+      setState(() {
+        _addressModel.postalCode.text = value.toString();
+        //print(value);
+      });
+    });
+
+    await MyFunction.getEducationLevel().then((value) {
+      setState(() {
+        dataEducation = value;
+        //print(value);
+      });
+    });
+    await this.setAddressEduc();
+  }
+
+  setAddressEduc() async {
+    _addressModel.idEduProvince = await dataProvince
+        .where((element) => element['name_th'] == _addressModel.eduProvine)
+        .first['id'];
+    setState(() {});
+
+    await MyFunction.getDistrict(_addressModel.idEduProvince).then((value) {
+      setState(() {
+        dataEducDistrict = value;
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    this.getProfile();
+    this.setData();
     // this.getDisabilityType();
     super.initState();
   }
@@ -133,16 +239,16 @@ class _ProfileState extends State<Profile> {
                 },
                 onTap: statusChanged || !editProfile
                     ? () {
-                  setState(() {
-                    editProfile = true;
-                  });
-                  if (statusChanged == true) {
-                    sendUpdateProfile();
-                    setState(() {
-                      editProfile = !editProfile;
-                    });
-                  }
-                }
+                        setState(() {
+                          editProfile = true;
+                        });
+                        if (statusChanged == true) {
+                          sendUpdateProfile();
+                          setState(() {
+                            editProfile = !editProfile;
+                          });
+                        }
+                      }
                     : null,
               ),
               MyWidget.buildSizedBox('h', 18),
@@ -153,18 +259,14 @@ class _ProfileState extends State<Profile> {
                 widget: mydropdown(
                   listdata: dataPrefixName
                       .map(
-                        (e) =>
-                        DropdownMenuItem<String>(
+                        (e) => DropdownMenuItem<String>(
                           value: e,
                           child: Text(
                             e.toString(),
-                            style: Theme
-                                .of(context)
-                                .textTheme
-                                .body1,
+                            style: Theme.of(context).textTheme.body1,
                           ),
                         ),
-                  )
+                      )
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -205,23 +307,15 @@ class _ProfileState extends State<Profile> {
                 text: _profileModel.birthday.text.isEmpty
                     ? ''
                     : DateFormat('dd MMM yyyy').format(
-                  DateTime.parse(_profileModel.birthday.text).toLocal(),
-                ),
+                        DateTime.parse(_profileModel.birthday.text).toLocal(),
+                      ),
                 edit: editProfile,
                 widget: MyTextfFieldNopading(
                   hintText: 'วันเกิด',
                   readOnly: true,
                   onTap: () {
-                    /*DateTime _data = DateTime(DateTime
-                        .parse(_profileModel.birthday.text)
-                        .year, DateTime
-                        .parse(_profileModel.birthday.text)
-                        .month, DateTime
-                        .parse(_profileModel.birthday.text)
-                        .day);*/
                     DateTime _data = DateTime(1993);
-                    Unitity.selectDate(context,_data)
-                        .then((value) {
+                    Unitity.selectDate(context, _data).then((value) {
                       if (value != null) {
                         setState(() {
                           _profileModel.birthday.text =
@@ -294,20 +388,14 @@ class _ProfileState extends State<Profile> {
                       value: 1,
                       child: Text(
                         'ชาย',
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .body1,
+                        style: Theme.of(context).textTheme.body1,
                       ),
                     ),
                     DropdownMenuItem<int>(
                       value: 2,
                       child: Text(
                         'หญิง',
-                        style: Theme
-                            .of(context)
-                            .textTheme
-                            .body1,
+                        style: Theme.of(context).textTheme.body1,
                       ),
                     ),
                   ],
@@ -328,85 +416,300 @@ class _ProfileState extends State<Profile> {
                     label: 'กรุณาเลือกเพศ',
                     listdata: disabilityType
                         .map(
-                          (e) =>
-                          DropdownMenuItem<int>(
+                          (e) => DropdownMenuItem<int>(
                             value: e['id'],
                             child: Text(
                               e['description'],
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .body1,
+                              style: Theme.of(context).textTheme.body1,
                             ),
                           ),
-                    )
+                        )
                         .toList()),
               ),
               MyWidget.buildSizedBox('h', 18),
               Mytexth2(
                 text: 'ที่อยู่',
-                onTap: () {},
+                statusEdit: editAddress,
+                onClose: () {
+                  setState(() {
+                    editAddress = false;
+                  });
+                },
+               /* onTap: statusAddress || !editAddress
+                    ? () {
+                        setState(() {
+                          editAddress = true;
+                        });
+                        if (statusAddress == true) {
+                          //sendUpdateProfile();
+                          sendUpdateAddress();
+                          setState(() {
+                            editAddress = !editAddress;
+                          });
+                        }
+                      }
+                    : null,*/
+                onTap: statusAddress || !editAddress
+                    ? () {
+                  setState(() {
+                    editAddress = true;
+                  });
+                  if (statusAddress == true) {
+                    sendUpdateAddress();
+                    setState(() {
+                      editAddress = !editAddress;
+                    });
+                  }
+                }
+                    : null,
               ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.houseNo.text,
-                title: 'บ้านเลขที่',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.villageNo.text,
-                title: 'หมู่ที่',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.lane.text,
-                title: 'ซอย/ถนน',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.subDistrict ?? '',
-                title: 'ตำบล/แขวง',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.district ?? '',
-                title: 'อำเภอ/เขต',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.province ?? '',
-                title: 'จังหวัด',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.postalCode ?? '',
-                title: 'รหัสไปรษณีย์',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.eduLevel ?? '',
-                title: 'กำลังศึกษาระดับ',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.eduPlace ?? '',
-                title: 'สถานศึกษา',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.eduDistrict ?? '',
-                title: 'อำเภอ',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.eduProvine ?? '',
-                title: 'จังหวัด',
-              ),
-              MyWidget.buildSizedBox('h', 18),
-              body(
-                text: _addressModel.tel.text,
-                title: 'เบอร์โทร',
-              ),
+              Form(
+                key: _keyForm,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  children: [
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.houseNo.text,
+                      edit: editAddress,
+                      widget: MyTextfFieldNopading(
+                        controller: _addressModel.houseNo,
+                        labelText: "บ้านเลขที่",
+                        onChanged: textAddress,
+                      ),
+                      title: 'บ้านเลขที่',
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.villageNo.text,
+                      title: 'หมู่ที่',
+                      edit: editAddress,
+
+                      widget: MyTextfFieldNopading(
+                        onChanged: textAddress,
+                        controller: _addressModel.villageNo,
+                        labelText: "หมู่ที่",
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.lane.text,
+                      title: 'ซอย/ถนน',
+                      edit: editAddress,
+                      widget: MyTextfFieldNopading(
+                        controller: _addressModel.lane,
+                        onChanged: textAddress,
+                        labelText: "ซอย/ถนน",
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.province ?? '',
+                      title: 'จังหวัด',
+                      edit: editAddress,
+                      widget: mydropdown(
+                        listdata: dataProvince
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e['name_th'],
+                            child: Text(
+                              e['name_th'].toString(),
+                              style: Theme.of(context).textTheme.body1,
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _addressModel.province = value;
+                            _addressModel.district = null;
+                            _addressModel.subDistrict = null;
+                            statusAddress = true;
+                            setData();
+                          });
+                        },
+                        label: 'จังหวัด',
+                        value: _addressModel.province,
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.district ?? '',
+                      title: 'อำเภอ/เขต',
+                      edit: editAddress,
+                      widget: mydropdown(
+                        listdata: dataDistrict
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e['name_th'],
+                            child: Text(
+                              e['name_th'].toString(),
+                              style: Theme.of(context).textTheme.body1,
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (value) {
+                          //_addressModel.subDistrict = null;
+                          _addressModel.district = value;
+                          setData();
+                          statusAddress = true;
+                          setState(() {});
+                        },
+                        label: 'อำเภอ/เขต',
+                        value: _addressModel.district,
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.subDistrict ?? '',
+                      title: 'ตำบล/แขวง',
+                      edit: editAddress,
+                      widget: mydropdown(
+                        listdata: dataSubDistrict
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e['name_th'],
+                            child: Text(
+                              e['name_th'].toString(),
+                              style: Theme.of(context).textTheme.body1,
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (value) {
+                          //_addressModel.postalCode.clear();
+                          _addressModel.subDistrict = value;
+                          statusAddress = true;
+                          setData();
+                          setState(() {});
+                        },
+                        label: 'กรุณาเลือกตำบล/แขวง',
+                        value: _addressModel.subDistrict,
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.postalCode.text,
+                      title: 'รหัสไปรษณีย์',
+                      edit: editAddress,
+                      widget: mytextfield(
+                        hintText: 'รหัสไปรษณีย์',
+                        labelText: "รหัสไปรษณีย์",
+                        readOnly: true,
+                        controller: _addressModel.postalCode,
+                        validator: MyValidate.checkEmpty,
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.eduLevel ?? '',
+                      title: 'กำลังศึกษาระดับ',
+                      edit: editAddress,
+                      widget: mydropdown(
+                        listdata: dataEducation
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e.toString(),
+                              style: Theme.of(context).textTheme.body1,
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (value) {
+                          _addressModel.eduLevel = value;
+                          statusAddress = true;
+                          setState(() {});
+                        },
+                        label: 'กำลังศึกษาระดับ',
+                        value: _addressModel.eduLevel,
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.eduPlace.text,
+                      title: 'สถานศึกษา',
+                      edit: editAddress,
+
+                      widget: mytextfield(
+                        onChanged: textAddress,
+                        controller: _addressModel.eduPlace,
+                        labelText: 'สถานศึกษา',
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.eduProvine ?? '',
+                      title: 'จังหวัด',
+                      edit: editAddress,
+                      widget: mydropdown(
+                        listdata: dataProvince
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e['name_th'],
+                            child: Text(
+                              e['name_th'].toString(),
+                              style: Theme.of(context).textTheme.body1,
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _addressModel.eduProvine = value;
+                            _addressModel.eduDistrict = null;
+                            statusAddress = true;
+                            setAddressEduc();
+                          });
+                        },
+                        label: 'จังหวัด',
+                        value: _addressModel.eduProvine,
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.eduDistrict ?? '',
+                      title: 'อำเภอ',
+                      edit: editAddress,
+                      widget: mydropdown(
+                        listdata: dataEducDistrict
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e['name_th'],
+                            child: Text(
+                              e['name_th'].toString(),
+                              style: Theme.of(context).textTheme.body1,
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            _addressModel.eduDistrict = value;
+                            statusAddress = true;
+                          });
+                        },
+                        label: 'อำเภอ',
+                        value: _addressModel.eduDistrict,
+                      ),
+                    ),
+                    MyWidget.buildSizedBox('h', 18),
+                    body(
+                      text: _addressModel.tel.text,
+                      title: 'เบอร์โทร',
+                      edit: editAddress,
+                      widget: mytextfield(
+                        controller: _addressModel.tel,
+                        onChanged: textAddress,
+                        labelText: 'เบอร์โทร',
+                        maxLength: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -462,15 +765,15 @@ class body extends StatelessWidget {
           child: edit
               ? widget!
               : Container(
-            alignment: Alignment.centerLeft,
-            //width: MediaQuery.of(context).size.width - 200,
-            //color: Colors.black12,
-            child: Text(
-              '$text',
-              maxLines: 2,
-              //style: Theme.of(context).textTheme,
-            ),
-          ),
+                  alignment: Alignment.centerLeft,
+                  //width: MediaQuery.of(context).size.width - 200,
+                  //color: Colors.black12,
+                  child: Text(
+                    '$text',
+                    maxLines: 2,
+                    //style: Theme.of(context).textTheme,
+                  ),
+                ),
         )
       ],
     );

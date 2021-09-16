@@ -13,12 +13,16 @@ class AddressModel {
   String? subDistrict;
   String? district;
   String? province;
-  String? postalCode;
+  TextEditingController postalCode =TextEditingController();
   String? eduLevel;
-  String? eduPlace;
+  TextEditingController eduPlace = TextEditingController();
   String? eduProvine;
   String? eduDistrict;
   TextEditingController tel = TextEditingController();
+  int? idProvince;
+  int? idDistrict;
+  int? idSubDistrict;
+  int? idEduProvince;
 
   /* factory Addressmodel.fromRawJson(String str) => Addressmodel.fromJson(json.decode(str));
 
@@ -31,9 +35,9 @@ class AddressModel {
     subDistrict = json["sub_district"];
     district = json["district"];
     province = json["province"];
-    postalCode = json["postal_code"];
+    postalCode.text = json["postal_code"];
     eduLevel = json["edu_level"];
-    eduPlace = json["edu_place"];
+    eduPlace.text = json["edu_place"];
     eduProvine = json["edu_provine"];
     eduDistrict = json["edu_district"];
     tel.text = json["tel"];
@@ -46,9 +50,9 @@ class AddressModel {
         "sub_district": subDistrict,
         "district": district,
         "province": province,
-        "postal_code": postalCode,
+        "postal_code": postalCode.text,
         "edu_level": eduLevel,
-        "edu_place": eduPlace,
+        "edu_place": eduPlace.text,
         "edu_provine": eduProvine,
         "edu_district": eduDistrict,
         "tel": tel.text,
