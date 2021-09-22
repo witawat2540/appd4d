@@ -31,15 +31,13 @@ class mydropdown extends StatelessWidget {
       decoration: InputDecoration(
         labelText: '$label',
         //hintText: hintText,
-        errorStyle: Theme.of(context).textTheme.body1!.apply(
-              color: Colors.redAccent,
-            ),
+        errorStyle: TextStyle(color: Colors.redAccent,fontSize: 13),
         labelStyle: Theme.of(context)
             .textTheme
             .body1!
             .apply(color: MyColors.colorText_label),
         contentPadding:
-            new EdgeInsets.symmetric(vertical: 18.0, horizontal: 16.0),
+            new EdgeInsets.symmetric(vertical: 18.0, horizontal: 10.0),
         border: new OutlineInputBorder(
           //borderRadius: new BorderRadius.circular(25.0),
           borderSide: line ? BorderSide.none : BorderSide(),

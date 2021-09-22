@@ -1,16 +1,41 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:onde_app/page/registertrainning.dart';
+import 'package:intl/intl.dart';
+import 'package:onde_app/model/practicemodel.dart';
+import 'package:onde_app/network/connect.dart';
+import 'package:onde_app/page/formpractice.dart';
 import 'package:onde_app/service/mycolors.dart';
 import 'package:onde_app/service/mywidget.dart';
 
-class Training extends StatefulWidget {
-  const Training({Key? key}) : super(key: key);
+class Practice extends StatefulWidget {
+  const Practice({Key? key}) : super(key: key);
 
   @override
-  _TrainingState createState() => _TrainingState();
+  _PracticeState createState() => _PracticeState();
 }
 
-class _TrainingState extends State<Training> {
+class _PracticeState extends State<Practice> {
+  List<DataPractice> _dataPractice = [];
+
+  Future _getDataPractice() async {
+    await ConnectAPI().get('practice').then((value) {
+      if (value.statusCode == 200 || jsonDecode(value.body)['status'] == true) {
+        setState(() {
+          _dataPractice = getPracticeModelFromJson(value.body).data ?? [];
+          print(_dataPractice[0].name);
+        });
+      }
+      //this.setDataAddress();
+    });
+  }
+
+  @override
+  void initState() {
+    this._getDataPractice();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,10 +48,10 @@ class _TrainingState extends State<Training> {
               Mytitle(
                 text: 'ลงทะเบียนความต้องการฝึกอบรมการใช้อุปกรณ์/เครื่องมือ',
               ),
-              Mysutitle(
+              /*Mysutitle(
                 text: 'อุปกรณ์และเครื่องมือคงเหลือทั้งหมด 2,591 รายการ',
                 vertical: 5,
-              ),
+              ),*/
               MyWidget.buildSizedBox('h', 20),
               Mytexth2(
                 text: 'รายการฝึกอบรม',
@@ -41,51 +66,26 @@ class _TrainingState extends State<Training> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => RegisterTraining(),
+                      builder: (context) => FromPractice(),
                     ),
                   );
                 },
               ),
               MyWidget.buildSizedBox('h', 15),
-              Mylistcross(
-                title: '1. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
-              //MyWidget.buildSizedBox('h', 20),
-              Mylistcross(
-                title: '2. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
-              //MyWidget.buildSizedBox('h', 20),
-              Mylistcross(
-                title: '3. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
-              //MyWidget.buildSizedBox('h', 20),
-              Mylistcross(
-                title: '1. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
-              //MyWidget.buildSizedBox('h', 20),
-              Mylistcross(
-                title: '1. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
-              //MyWidget.buildSizedBox('h', 20),
-              Mylistcross(
-                title: '1. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
-              //MyWidget.buildSizedBox('h', 20),
-              Mylistcross(
-                title: '1. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
-              //MyWidget.buildSizedBox('h', 20),
-              Mylistcross(
-                title: '1. วิธีการใช้งานเครื่องพิมพ์อักษรเบรลล์',
-                datetime: '2020-09-28 09:26:28',
-              ),
+              Column(
+                children: _dataPractice.map(
+                  (e) {
+                    int index = _dataPractice.indexOf(e);
+                    return Mylistcross(
+                      title: '${index + 1}. ${e.name}',
+                      datetime: e.createdAt == null
+                          ? 'ไม่มีข้อมูลวันที่'
+                          : DateFormat('yyyy-MM-dd HH:mm:ss')
+                              .format(e.createdAt!),
+                    );
+                  },
+                ).toList(),
+              )
             ],
           ),
         ),

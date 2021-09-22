@@ -5,6 +5,13 @@ class MyValidate{
     }
   }
 
+  static String? checkEmptySelect(value){
+    if(value == null){
+      return 'กรุณาเลือกช่องนี้';
+    }
+    return null;
+  }
+
   static String? checkEmptyPass(String? value){
     if(value!.isEmpty){
       return 'กรุณากรอกช่องนี้';
@@ -43,6 +50,13 @@ class MyValidate{
       return 'กรุณากรอกข้อมูลช่องนี้';
     }
     if (!value.contains('@') && !value.contains('.')) {
+      return 'อีเมลไม่ถูกต้อง';
+    }
+  }
+
+  static String? checkTextEmailNoEmy(String? value) {
+    //print('value.length');
+    if (!value!.contains('@') && !value.contains('.') && value.length > 0) {
       return 'อีเมลไม่ถูกต้อง';
     }
   }

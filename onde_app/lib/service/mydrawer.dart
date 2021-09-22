@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/device_details.dart';
 import 'package:onde_app/page/devicereturn.dart';
+import 'package:onde_app/page/docpage.dart';
 import 'package:onde_app/page/firstpage.dart';
 import 'package:onde_app/page/listrequest.dart';
 import 'package:onde_app/page/login.dart';
 import 'package:onde_app/page/profile.dart';
 import 'package:onde_app/page/register.dart';
-import 'package:onde_app/page/registertrainning.dart';
+import 'package:onde_app/page/formpractice.dart';
 import 'package:onde_app/page/report.dart';
 import 'package:onde_app/page/representative.dart';
-import 'package:onde_app/page/training.dart';
+import 'package:onde_app/page/practice.dart';
 import 'package:onde_app/service/mywidget.dart';
 
 import 'myunitity.dart';
@@ -214,14 +215,14 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                     text: 'ลงทะเบียนความต้องการฝึกอบรมการใช้อุปกรณ์/เครื่องมือ',
                     ontap: () {
                       Navigator.pop(context);
-                      widget.gotopage(Training());
+                      widget.gotopage(Practice());
                     },
                   ),
                   MyListSub(
                     text: 'เอกสารที่เกี่ยวข้อง',
                     ontap: () {
                       Navigator.pop(context);
-                      //widget.gotopage(Training());
+                      widget.gotopage(DocumentPage());
                     },
                   ),
                 ],

@@ -5,6 +5,7 @@ class Unitity {
   static bool isLoading = false;
   static var f = NumberFormat('#,###');
   static int? indexMenu;
+  static bool statusEdit = true;
 
   static MaterialPageRoute<dynamic> materialPageRoute(Widget _page) {
     return MaterialPageRoute(
