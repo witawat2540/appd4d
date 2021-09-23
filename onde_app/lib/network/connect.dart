@@ -88,4 +88,28 @@ class ConnectAPI {
     //print(haerder);
     //return '';
   }
+
+
+  Future<http.StreamedResponse> httpMultiFormHeaders(
+      Map<String, String> data, List<Future<MultipartFile>?> pathImage, String uri) async {
+    var request = http.MultipartRequest('POST', Uri.parse(url + uri));
+    await gettoken();
+    request.headers.addAll(headers);
+    request.fields.addAll(data);
+    if(pathImage.isNotEmpty){
+      for(var item in pathImage){
+        request.files.add(await item!.then((value) => value));
+      }
+    }
+    //request.files.add(await http.MultipartFile.fromPath('pwd_pic', pathImage));
+    //request.files.add(await );
+
+    http.StreamedResponse response = await request.send();
+
+    try {
+      return response;
+    } catch (err) {
+      return throw Exception('Not connect Network');
+    }
+  }
 }

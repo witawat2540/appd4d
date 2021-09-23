@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:onde_app/network/connect.dart';
+import 'package:onde_app/page/contract_document.dart';
 import 'package:onde_app/page/device_details.dart';
 import 'package:onde_app/page/devicereturn.dart';
 import 'package:onde_app/page/docpage.dart';
 import 'package:onde_app/page/firstpage.dart';
+import 'package:onde_app/page/helpdesks.dart';
+import 'package:onde_app/page/helpfaqs.dart';
 import 'package:onde_app/page/listrequest.dart';
 import 'package:onde_app/page/login.dart';
 import 'package:onde_app/page/profile.dart';
@@ -284,10 +287,50 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
         mylisticon(
           text: 'แจ้งปัญหาการใช้งาน',
           ontap: () {
-            Navigator.pop(context);
+            //Navigator.pop(context);
+            if (Unitity.indexMenu == 5) {
+              setState(() {
+                Unitity.indexMenu = null;
+              });
+            } else {
+              setState(() {
+                Unitity.indexMenu = 5;
+              });
+            }
             //gotopage(ContractDocument());
-            widget.gotopage(Report());
+            //widget.gotopage(Report());
           },
+        ),
+        Unitity.indexMenu == 5
+            ? Column(
+          children: [
+            MyListSub(
+              text: 'แจ้งปัญหา',
+              ontap: () {
+                Navigator.pop(context);
+                widget.gotopage(Report());
+              },
+            ),
+            MyListSub(
+              text: 'ประวัติการแจ้งปัญหา',
+              ontap: () {
+                Navigator.pop(context);
+                widget.gotopage(HelpDesks());
+              },
+            ),
+
+            MyListSub(
+              text: 'ปัญหาที่พบบ่อย',
+              ontap: () {
+                Navigator.pop(context);
+                widget.gotopage(HelpFaqs());
+              },
+            ),
+          ],
+        )
+            : Container(
+          width: 0,
+          height: 0,
         ),
         mylisticon(
           text: 'ตอบแบบสอบถาม',

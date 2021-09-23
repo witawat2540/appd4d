@@ -6,6 +6,7 @@ import 'package:onde_app/model/practicemodel.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/formpractice.dart';
 import 'package:onde_app/service/mycolors.dart';
+import 'package:onde_app/service/myunitity.dart';
 import 'package:onde_app/service/mywidget.dart';
 
 class Practice extends StatefulWidget {
@@ -68,7 +69,18 @@ class _PracticeState extends State<Practice> {
                     MaterialPageRoute(
                       builder: (context) => FromPractice(),
                     ),
-                  );
+                  ).then((value) {
+                    if (value ?? false) {
+                      _getDataPractice();
+                      MyWidget.showInSnackBarContext(
+                          'ทำรายการสำเร็จ',
+                          Colors.white,
+                          context,
+                          MyColors.colorText_bule,
+                          2,
+                          Icons.check_circle);
+                    }
+                  });
                 },
               ),
               MyWidget.buildSizedBox('h', 15),
@@ -77,6 +89,14 @@ class _PracticeState extends State<Practice> {
                   (e) {
                     int index = _dataPractice.indexOf(e);
                     return Mylistcross(
+                      onTab: () {
+                        Navigator.push(
+                          context,
+                          Unitity.materialPageRoute(
+                            FromPractice(isForm: true,dataPractice: e,),
+                          ),
+                        );
+                      },
                       title: '${index + 1}. ${e.name}',
                       datetime: e.createdAt == null
                           ? 'ไม่มีข้อมูลวันที่'
@@ -96,11 +116,13 @@ class _PracticeState extends State<Practice> {
 
 class Mylistcross extends StatelessWidget {
   final String title, datetime;
+  final void Function()? onTab;
 
   const Mylistcross({
     Key? key,
     required this.title,
     required this.datetime,
+    this.onTab,
   }) : super(key: key);
 
   @override
@@ -129,7 +151,7 @@ class Mylistcross extends StatelessWidget {
             CircleAvatar(
               backgroundColor: MyColors.colorText_bule,
               child: IconButton(
-                onPressed: () {},
+                onPressed: onTab,
                 splashRadius: 20,
                 icon: Icon(
                   Icons.remove_red_eye_rounded,

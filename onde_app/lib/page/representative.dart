@@ -203,7 +203,7 @@ class _RepresentativeState extends State<Representative> {
                     MyWidget.buildSizedBox('h', 30),
                     Row(
                       children: [
-                        /*Expanded(
+                        Expanded(
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                       fixedSize: Size(0, 49),
@@ -220,7 +220,7 @@ class _RepresentativeState extends State<Representative> {
                                   }),
                                 ),
                               ),
-                              MyWidget.buildSizedBox('w', 15),*/
+                              MyWidget.buildSizedBox('w', 15),
                         Expanded(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
