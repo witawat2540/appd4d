@@ -15,6 +15,7 @@ import 'package:onde_app/page/formpractice.dart';
 import 'package:onde_app/page/report.dart';
 import 'package:onde_app/page/representative.dart';
 import 'package:onde_app/page/practice.dart';
+import 'package:onde_app/page/rights.dart';
 import 'package:onde_app/service/mywidget.dart';
 
 import 'myunitity.dart';
@@ -237,7 +238,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
         mylisticon(
           text: 'กรอกแบบคำขอยืม/รับอุปกรณ์',
           ontap: () {
-           /* Navigator.pop(context);
+            /* Navigator.pop(context);
             widget.gotopage(ListRequest());*/
             if (Unitity.indexMenu == 2) {
               setState(() {
@@ -252,27 +253,27 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
         ),
         Unitity.indexMenu == 2
             ? Column(
-          children: [
-            MyListSub(
-              text: 'แบบคำขอยืมอุปกรณ์ฯ ทก.01',
-              ontap: () {
-                Navigator.pop(context);
-                //widget.gotopage(ListRequest());
-              },
-            ),
-            MyListSub(
-              text: 'แบบคำขอรับอุปกรณ์ฯ ทก.02',
-              ontap: () {
-                Navigator.pop(context);
-               // widget.gotopage(Training());
-              },
-            ),
-          ],
-        )
+                children: [
+                  MyListSub(
+                    text: 'แบบคำขอยืมอุปกรณ์ฯ ทก.01',
+                    ontap: () {
+                      Navigator.pop(context);
+                      //widget.gotopage(ListRequest());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'แบบคำขอรับอุปกรณ์ฯ ทก.02',
+                    ontap: () {
+                      Navigator.pop(context);
+                      // widget.gotopage(Training());
+                    },
+                  ),
+                ],
+              )
             : Container(
-          width: 0,
-          height: 0,
-        ),
+                width: 0,
+                height: 0,
+              ),
         mylisticon(
           text: 'ผลการพิจารณา',
         ),
@@ -303,40 +304,43 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
         ),
         Unitity.indexMenu == 5
             ? Column(
-          children: [
-            MyListSub(
-              text: 'แจ้งปัญหา',
-              ontap: () {
-                Navigator.pop(context);
-                widget.gotopage(Report());
-              },
-            ),
-            MyListSub(
-              text: 'ประวัติการแจ้งปัญหา',
-              ontap: () {
-                Navigator.pop(context);
-                widget.gotopage(HelpDesks());
-              },
-            ),
-
-            MyListSub(
-              text: 'ปัญหาที่พบบ่อย',
-              ontap: () {
-                Navigator.pop(context);
-                widget.gotopage(HelpFaqs());
-              },
-            ),
-          ],
-        )
+                children: [
+                  MyListSub(
+                    text: 'แจ้งปัญหา',
+                    ontap: () {
+                      Navigator.pop(context);
+                      widget.gotopage(Report());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'ประวัติการแจ้งปัญหา',
+                    ontap: () {
+                      Navigator.pop(context);
+                      widget.gotopage(HelpDesks());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'ปัญหาที่พบบ่อย',
+                    ontap: () {
+                      Navigator.pop(context);
+                      widget.gotopage(HelpFaqs());
+                    },
+                  ),
+                ],
+              )
             : Container(
-          width: 0,
-          height: 0,
-        ),
+                width: 0,
+                height: 0,
+              ),
         mylisticon(
           text: 'ตอบแบบสอบถาม',
         ),
-        mylisticon(
+        mylistnoicon(
           text: 'ระบบตรวจสอบสิทธิ',
+          ontap: () {
+            Navigator.pop(context);
+            widget.gotopage(RightsPage());
+          },
         ),
       ],
     );

@@ -32,13 +32,21 @@ class MyValidate{
     return null;
   }
 
- static String? checkPhone(String value) {
+ static String? checkPhone(String? value) {
     String patttern = r'(^0)[8,9,6]{1}[0-9]{8}';
     RegExp regExp = new RegExp(patttern);
-    if (value.isEmpty) {
+    if (value!.isEmpty) {
       return 'กรุณากรอกข้อมูลช่องนี้';
     }
     if (!regExp.hasMatch(value)) {
+      return 'เบอร์โทรศัพท์ไม่ถูกต้อง';
+    }
+  }
+
+  static String? checkPhoneNotEmpty(String? value) {
+    String patttern = r'(^0)[8,9,6]{1}[0-9]{8}';
+    RegExp regExp = new RegExp(patttern);
+    if (!regExp.hasMatch(value!) && value.length > 0) {
       return 'เบอร์โทรศัพท์ไม่ถูกต้อง';
     }
   }

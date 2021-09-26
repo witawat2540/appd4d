@@ -332,7 +332,7 @@ class _ProfileState extends State<Profile> {
               ),
               MyWidget.buildSizedBox('h', 18),
               body(
-                text: buildTextCitizenId(_profileModel.citizenId.text),
+                text: Unitity.buildTextCitizenId(_profileModel.citizenId.text),
                 title: 'เลขบัตรประชาชน',
                 edit: editProfile,
                 widget: MyTextfFieldNopading(
@@ -345,7 +345,7 @@ class _ProfileState extends State<Profile> {
               ),
               MyWidget.buildSizedBox('h', 18),
               body(
-                text: buildTextCitizenId(_profileModel.pwdId.text),
+                text: Unitity.buildTextCitizenId(_profileModel.pwdId.text),
                 title: 'บัตรประจำตัวคนพิการ',
                 edit: editProfile,
                 widget: MyTextfFieldNopading(
@@ -717,7 +717,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  buildTextCitizenId(String? test) {
+  /*buildTextCitizenId(String? test) {
     String text = '';
     if (test!.isNotEmpty) {
       text += '${test.substring(0, 1)}-';
@@ -727,7 +727,7 @@ class _ProfileState extends State<Profile> {
       text += '${test.substring(12, 13)}';
     }
     return text;
-  }
+  }*/
 }
 
 class body extends StatelessWidget {

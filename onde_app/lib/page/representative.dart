@@ -2,19 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:onde_app/model/Substitutemodel.dart';
 import 'package:onde_app/model/getsubstitute.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/formspouse.dart';
 import 'package:onde_app/page/formsubsitute.dart';
 import 'package:onde_app/page/profile.dart';
-import 'package:onde_app/service/getDataAddress.dart';
-import 'package:onde_app/service/mydropdown.dart';
-import 'package:onde_app/service/mytextfild.dart';
 import 'package:onde_app/service/myunitity.dart';
 import 'package:onde_app/service/mywidget.dart';
-
-import 'fuction.dart';
 
 class Representative extends StatefulWidget {
   const Representative({Key? key}) : super(key: key);
@@ -27,7 +21,7 @@ class _RepresentativeState extends State<Representative> {
   GetSubstituteModel dataSubstitute = GetSubstituteModel();
   bool statusEdit = true;
 
-  getSpouse() async {
+  getSubstitute() async {
     await ConnectAPI().get('get-all-substitute').then((value) {
       if (value.statusCode == 200 || jsonDecode(value.body)['status'] == true) {
         setState(() {
@@ -42,7 +36,7 @@ class _RepresentativeState extends State<Representative> {
                   builder: (context) => FormSubstitute(),
                 )).then((value) {
               if (value ?? false) {
-                getSpouse();
+                getSubstitute();
               }
             });
           }
@@ -55,7 +49,7 @@ class _RepresentativeState extends State<Representative> {
 
   @override
   void initState() {
-    this.getSpouse();
+    this.getSubstitute();
     super.initState();
   }
 
@@ -82,20 +76,26 @@ class _RepresentativeState extends State<Representative> {
           text: 'ข้อมูลผู้ยื่นคำขอแทนคนพิการ',
           vertical: 5,
         ),
-        MyWidget.buildSizedBox('h', 18),
-        Mybtn(
-          text:
-              'เพิ่มข้อมูลผู้อื่นคำขอแทนคนที่ ${(dataSubstitute.data?.length ?? 0) + 1}',
-          ontap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FormSubstitute(),
-              )).then((value) {
-            if (value ?? false) {
-              getSpouse();
-            }
-          }),
-        ),
+        dataSubstitute.data?.length == 2
+            ? Container()
+            : Column(
+                children: [
+                  MyWidget.buildSizedBox('h', 18),
+                  Mybtn(
+                    text:
+                        'เพิ่มข้อมูลผู้อื่นคำขอแทนคนที่ ${(dataSubstitute.data?.length ?? 0) + 1}',
+                    ontap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FormSubstitute(),
+                        )).then((value) {
+                      if (value ?? false) {
+                        getSubstitute();
+                      }
+                    }),
+                  ),
+                ],
+              ),
         Column(
           children: dataSubstitute.data?.map((e) {
                 int index = dataSubstitute.data!.indexOf(e);
@@ -109,22 +109,22 @@ class _RepresentativeState extends State<Representative> {
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.title ?? '',
+                      text: e.title ?? '-',
                       title: 'คำนำหน้าชื่อ',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.firstName ?? '',
+                      text: e.firstName ?? '-',
                       title: 'ชื่อ',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.lastName ?? '',
+                      text: e.lastName ?? '-',
                       title: 'นามสกุล',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.related ?? '',
+                      text: e.related ?? '-',
                       title: 'เกี่ยวข้องเป็น',
                     ),
                     MyWidget.buildSizedBox('h', 18),
@@ -142,85 +142,87 @@ class _RepresentativeState extends State<Representative> {
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.citizenId ?? '',
+                      text: Unitity.buildTextCitizenId(e.citizenId ?? ''),
                       title: 'เลขบัตรประชาชน',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.houseNo ?? '',
+                      text: e.houseNo ?? '-',
                       title: 'บ้านเลขที่',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.villageNo ?? '',
+                      text: e.villageNo ?? '-',
                       title: 'หมู่ที่',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.lane ?? '',
+                      text: e.lane ?? '-',
                       title: 'ซอย',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.province ?? '',
+                      text: e.province ?? '-',
                       title: 'จังหวัด',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.district ?? '',
+                      text: e.district ?? '-',
                       title: 'อำเภอ',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.subDistrict ?? '',
+                      text: e.subDistrict ?? '-',
                       title: 'ตำบล',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.postalCode ?? '',
+                      text: e.postalCode ?? '-',
                       title: 'รหัสไปรษณีย์',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.degree ?? '',
+                      text: e.degree ?? '-',
                       title: 'ระดับการศึกษา',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.eduPlace ?? '',
+                      text: e.eduPlace ?? '-',
                       title: 'สถานศึกษา',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.tel ?? '',
+                      text: e.tel ?? '-',
                       title: 'เบอร์โทร',
                     ),
                     MyWidget.buildSizedBox('h', 18),
                     body(
-                      text: e.email ?? '',
+                      text: e.email ?? '-',
                       title: 'อีเมล์',
                     ),
                     MyWidget.buildSizedBox('h', 30),
                     Row(
                       children: [
                         Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      fixedSize: Size(0, 49),
-                                      primary: Color(0xffFA601B)),
-                                  child: Text('เพิ่มข้อมูลคู่สมรส'),
-                                  onPressed: () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FormSpouse(),
-                                      )).then((value) {
-                                    if (value ?? false) {
-                                      getSpouse();
-                                    }
-                                  }),
-                                ),
-                              ),
-                              MyWidget.buildSizedBox('w', 15),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: Size(0, 49),
+                                primary: Color(0xffFA601B)),
+                            child: Text('เพิ่มข้อมูลคู่สมรส'),
+                            onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FormSpouse(
+                                    idSubstitute: e.id,
+                                  ),
+                                )).then((value) {
+                              if (value ?? false) {
+                                getSubstitute();
+                              }
+                            }),
+                          ),
+                        ),
+                        MyWidget.buildSizedBox('w', 15),
                         Expanded(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -237,7 +239,7 @@ class _RepresentativeState extends State<Representative> {
                               ),
                             ).then((value) {
                               if (value ?? false) {
-                                getSpouse();
+                                getSubstitute();
                               }
                             }),
                           ),

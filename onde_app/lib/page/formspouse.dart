@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:onde_app/model/Substitutemodel.dart';
 import 'package:onde_app/model/getsubstitute.dart';
+import 'package:onde_app/model/spousemodel.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/profile.dart';
 import 'package:onde_app/service/getDataAddress.dart';
@@ -17,10 +18,12 @@ import 'package:onde_app/service/validate.dart';
 import 'fuction.dart';
 
 class FormSpouse extends StatefulWidget {
-  final bool? statusEdit;
-  final Datum? data;
+  //final bool? statusEdit;
+  final int? idSubstitute;
 
-  const FormSpouse({Key? key, this.statusEdit, this.data}) : super(key: key);
+  //final Datum? data;
+
+  const FormSpouse({Key? key, this.idSubstitute}) : super(key: key);
 
   @override
   _FormSpouseState createState() => _FormSpouseState();
@@ -28,9 +31,10 @@ class FormSpouse extends StatefulWidget {
 
 class _FormSpouseState extends State<FormSpouse> {
   MyDataAddress _myDataAddress = MyDataAddress();
-  DataSubstituteModel _substituteModel = DataSubstituteModel();
+  SpouseModel _spouseModelModel = SpouseModel();
   GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
-
+  GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
+  bool statusForm = true;
 
   Future setDataAddress() async {
     await MyFunction.getPrefix().then((value) {
@@ -51,83 +55,84 @@ class _FormSpouseState extends State<FormSpouse> {
       });
     });
 
-    if (_substituteModel.province?.isNotEmpty ?? false) {
-      _substituteModel.idProvince = await _myDataAddress.dataProvince
-          .where((element) => element['name_th'] == _substituteModel.province)
-          .first['id'];
+    if (_spouseModelModel.provinceId != null) {
+      _spouseModelModel.province = await _myDataAddress.dataProvince
+          .where((element) => element['id'] == _spouseModelModel.provinceId)
+          .first['name_th'];
       setState(() {});
     }
-
-    await MyFunction.getDistrict(_substituteModel.idProvince).then((value) {
+    //print(_spouseModelModel.province);
+    await MyFunction.getDistrict(_spouseModelModel.provinceId).then((value) {
       setState(() {
         _myDataAddress.dataDistrict = value;
       });
     });
 
-    if (_substituteModel.district?.isNotEmpty ?? false) {
-      _substituteModel.idDistrict = await _myDataAddress.dataDistrict
-          .where((element) => element['name_th'] == _substituteModel.district)
-          .first['id'];
+    if (_spouseModelModel.districtId != null) {
+      _spouseModelModel.district = await _myDataAddress.dataDistrict
+          .where((element) => element['id'] == _spouseModelModel.districtId)
+          .first['name_th'];
       setState(() {});
     }
 
-    await MyFunction.getSubDistrict(_substituteModel.idDistrict).then((value) {
+    await MyFunction.getSubDistrict(_spouseModelModel.districtId).then((value) {
       setState(() {
         _myDataAddress.dataSubDistrict = value;
       });
     });
 
-    if (_substituteModel.subDistrict?.isNotEmpty ?? false) {
-      _substituteModel.idSubDistrict = await _myDataAddress.dataSubDistrict
-          .where(
-              (element) => element['name_th'] == _substituteModel.subDistrict)
-          .first['id'];
+    if (_spouseModelModel.subDistrictId != null) {
+      _spouseModelModel.subDistrict = await _myDataAddress.dataSubDistrict
+          .where((element) => element['id'] == _spouseModelModel.subDistrictId)
+          .first['name_th'];
       setState(() {});
-      await MyFunction.getZipcode(_substituteModel.idSubDistrict).then((value) {
+      await MyFunction.getZipcode(_spouseModelModel.subDistrictId)
+          .then((value) {
         setState(() {
-          _substituteModel.postalCode.text = value.toString();
+          _spouseModelModel.postalCode.text = value.toString();
           //print(value);
         });
       });
     }
-    await MyFunction.getEducationLevel().then((value) {
-      setState(() {
-        _myDataAddress.dataEducation = value;
-        //print(value);
-      });
-    });
-
-    //print(_myDataAddress.dataPrefixName);
   }
 
-  Future<void> sendSubstitute() async {
+  Future<void> sendSpouseSubstitute() async {
     //print(jsonEncode(modelData.toJson()));
+    _spouseModelModel.substituteId = widget.idSubstitute;
     if (_keyForm.currentState!.validate()) {
       await ConnectAPI()
-          .postHeaders(
-          jsonEncode(_substituteModel.toJson()), 'create-substitute')
+          .postHeaders(jsonEncode(_spouseModelModel.toJson()),
+              'substitute/spouse/create')
           .then((value) async {
         if (value.statusCode == 200) {
-          Navigator.pop(context,true);
+          //Navigator.pop(context,true);
+          setState(() {});
+          statusForm = false;
+          MyWidget.showInSnackBar('บันทึกสำเร็จ', Colors.white, _keyScaffold,
+              MyColors.colorText_bule, 2, Icons.check_circle);
         } else {
-          MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white,
-              context, Colors.redAccent, 2, Icons.close);
+          MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
+              Colors.redAccent, 2, Icons.close);
         }
       }).catchError((onError) {
-        MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+        MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
             Colors.redAccent, 2, Icons.close);
       });
     }
   }
-  checkEdit(){
-    if(widget.statusEdit?? false){
-      this.updateSubstitute();
+
+  checkEdit() {
+    if(statusForm){
+      //this.updateSubstitute();
+      setState(() {
+        statusForm = false;
+      });
     }else{
-      sendSubstitute();
+      sendSpouseSubstitute();
     }
   }
 
-  Future<void> updateSubstitute() async {
+  /*Future<void> updateSubstitute() async {
     //print(jsonEncode(modelData.toJson()));
     if (_keyForm.currentState!.validate()) {
       await ConnectAPI()
@@ -145,23 +150,25 @@ class _FormSpouseState extends State<FormSpouse> {
             Colors.redAccent, 2, Icons.close);
       });
     }
-  }
+  }*/
 
   @override
   void initState() {
-    if(widget.statusEdit??false == true){
+    /* if(widget.statusEdit??false == true){
       //print();
       this.setDataAddress();
-      _substituteModel.setText(widget.data!.toJson());
+      //_spouseModelModel.setText(widget.data!.toJson());
     }else{
       this.setDataAddress();
-    }
+    }*/
+    this.setDataAddress();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _keyScaffold,
         appBar: AppBar(),
         body: Container(
           padding: const EdgeInsets.all(15.0),
@@ -180,38 +187,38 @@ class _FormSpouseState extends State<FormSpouse> {
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: 'นาง',
+                    text: _spouseModelModel.title ?? '-',
                     title: 'คำนำหน้าชื่อ',
-                    edit: true,
+                    edit: statusForm,
                     widget: mydropdown(
                       listdata: _myDataAddress.dataPrefixName
                           .map(
                             (e) => DropdownMenuItem<String>(
-                          value: e,
-                          child: Text(
-                            e.toString(),
-                            style: Theme.of(context).textTheme.body1,
-                          ),
-                        ),
-                      )
+                              value: e,
+                              child: Text(
+                                e.toString(),
+                                style: Theme.of(context).textTheme.body1,
+                              ),
+                            ),
+                          )
                           .toList(),
                       validator: MyValidate.checkEmptySelect,
                       onChanged: (value) {
                         setState(() {
-                          _substituteModel.title = value;
+                          _spouseModelModel.title = value;
                           //statusChanged = true;
                         });
                       },
                       label: 'คำนำหน้าชื่อ',
-                      value: _substituteModel.title,
+                      value: _spouseModelModel.title,
                     ),
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.firstName.text,
-                    edit: true,
+                    text: _spouseModelModel.firstName.text,
+                    edit: statusForm,
                     widget: MyTextfFieldNopading(
-                      controller: _substituteModel.firstName,
+                      controller: _spouseModelModel.firstName,
                       hintText: 'ชื่อ',
                       labelText: 'ชื่อ',
                       validator: MyValidate.checkEmpty,
@@ -220,11 +227,11 @@ class _FormSpouseState extends State<FormSpouse> {
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.lastName.text,
+                    text: _spouseModelModel.lastName.text,
                     title: 'นามสกุล',
-                    edit: true,
+                    edit: statusForm,
                     widget: MyTextfFieldNopading(
-                      controller: _substituteModel.lastName,
+                      controller: _spouseModelModel.lastName,
                       validator: MyValidate.checkEmpty,
                       hintText: 'นามสกุล',
                       labelText: 'นามสกุล',
@@ -232,20 +239,24 @@ class _FormSpouseState extends State<FormSpouse> {
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.proxyDate.text,
+                    text: _spouseModelModel.birthday.text.isEmpty
+                        ? '-'
+                        : DateFormat('dd-MMM-yyyy').format(
+                            DateTime.parse(_spouseModelModel.birthday.text),
+                          ),
                     title: 'วันเกิด',
-                    edit: true,
+                    edit: statusForm,
                     widget: MyTextfFieldNopading(
                       labelText: 'วันเกิด',
                       hintText: 'วันเกิด',
-                      controller: _substituteModel.proxyDate,
+                      controller: _spouseModelModel.birthday,
                       validator: MyValidate.checkEmpty,
                       onTap: () {
                         DateTime _data = DateTime(1993);
                         Unitity.selectDate(context, _data).then((value) {
                           if (value != null) {
                             setState(() {
-                              _substituteModel.proxyDate.text =
+                              _spouseModelModel.birthday.text =
                                   DateFormat('yyyy-MM-dd').format(value);
                               //statusChanged = true;
                             });
@@ -257,215 +268,155 @@ class _FormSpouseState extends State<FormSpouse> {
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.citizenId.text,
+                    text: _spouseModelModel.citizenId.text,
                     title: 'เลขบัตรประชาชน',
                     widget: MyTextfFieldNopading(
-                      controller: _substituteModel.citizenId,
+                      controller: _spouseModelModel.citizenId,
                       validator: MyValidate.checkEmpty,
                       labelText: 'เลขบัตรประชาชน',
                       hintText: 'เลขบัตรประชาชน',
                       maxLength: 13,
                     ),
-                    edit: true,
+                    edit: statusForm,
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.houseNo.text,
+                    text: _spouseModelModel.houseNo.text,
                     title: 'บ้านเลขที่',
                     widget: MyTextfFieldNopading(
-                      controller: _substituteModel.houseNo,
+                      controller: _spouseModelModel.houseNo,
                       validator: MyValidate.checkEmpty,
                       labelText: 'บ้านเลขที่',
                       hintText: 'บ้านเลขที่',
                     ),
-                    edit: true,
+                    edit: statusForm,
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.villageNo.text,
+                    text: _spouseModelModel.villageNo.text,
                     title: 'หมู่ที่',
                     widget: MyTextfFieldNopading(
-                      controller: _substituteModel.villageNo,
+                      controller: _spouseModelModel.villageNo,
                       validator: MyValidate.checkEmpty,
                       labelText: 'หมู่ที่',
                       hintText: 'หมู่ที่',
                     ),
-                    edit: true,
+                    edit: statusForm,
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.lane.text,
-                    title: 'ซอย',
-                    widget: MyTextfFieldNopading(
-                      controller: _substituteModel.lane,
-                      labelText: 'ซอย',
-                      hintText: 'ซอย',
-                    ),
-                    edit: true,
-                  ),
-                  MyWidget.buildSizedBox('h', 18),
-                  body(
-                    text: _substituteModel.province ?? '',
+                    text: _spouseModelModel.province ?? '-',
                     title: 'จังหวัด',
                     widget: mydropdown(
                       listdata: _myDataAddress.dataProvince
                           .map(
                             (e) => DropdownMenuItem(
-                          value: e['name_th'],
-                          child: Text(
-                            e['name_th'].toString(),
-                            style: Theme.of(context).textTheme.body1,
-                          ),
-                        ),
-                      )
+                              value: e['id'],
+                              child: Text(
+                                e['name_th'].toString(),
+                                style: Theme.of(context).textTheme.body1,
+                              ),
+                            ),
+                          )
                           .toList(),
                       onChanged: (value) {
                         setState(() {
-                          _substituteModel.province = value;
-                          _substituteModel.district = null;
-                          _substituteModel.subDistrict = null;
-                          _substituteModel.postalCode.text = '';
+                          _spouseModelModel.provinceId = value;
+                          _spouseModelModel.districtId = null;
+                          _spouseModelModel.subDistrictId = null;
+                          _spouseModelModel.postalCode.text = '';
                           //statusAddress = true;
                           setDataAddress();
                         });
                       },
                       label: 'จังหวัด',
-                      value: _substituteModel.province,
+                      value: _spouseModelModel.provinceId,
                     ),
-                    edit: true,
+                    edit: statusForm,
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.district ?? '',
+                    text: _spouseModelModel.district ?? '-',
                     title: 'อำเภอ',
                     widget: mydropdown(
                       listdata: _myDataAddress.dataDistrict
                           .map(
                             (e) => DropdownMenuItem(
-                          value: e['name_th'],
-                          child: Text(
-                            e['name_th'].toString(),
-                            style: Theme.of(context).textTheme.body1,
-                          ),
-                        ),
-                      )
+                              value: e['id'],
+                              child: Text(
+                                e['name_th'].toString(),
+                                style: Theme.of(context).textTheme.body1,
+                              ),
+                            ),
+                          )
                           .toList(),
                       validator: MyValidate.checkEmptySelect,
                       onChanged: (value) {
-                        //_substituteModel.subDistrict = null;
-                        _substituteModel.district = value;
+                        _spouseModelModel.subDistrictId = null;
+                        _spouseModelModel.districtId = value;
+                        _spouseModelModel.postalCode.text = '';
                         setDataAddress();
                         //statusAddress = true;
                         setState(() {});
                       },
                       label: 'อำเภอ/เขต',
-                      value: _substituteModel.district,
+                      value: _spouseModelModel.districtId,
                     ),
-                    edit: true,
+                    edit: statusForm,
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.subDistrict ?? '',
+                    text: _spouseModelModel.subDistrict ?? '-',
                     title: 'ตำบล',
                     widget: mydropdown(
                       listdata: _myDataAddress.dataSubDistrict
                           .map(
                             (e) => DropdownMenuItem(
-                          value: e['name_th'],
-                          child: Text(
-                            e['name_th'].toString(),
-                            style: Theme.of(context).textTheme.body1,
-                          ),
-                        ),
-                      )
+                              value: e['id'],
+                              child: Text(
+                                e['name_th'].toString(),
+                                style: Theme.of(context).textTheme.body1,
+                              ),
+                            ),
+                          )
                           .toList(),
                       validator: MyValidate.checkEmptySelect,
                       onChanged: (value) {
                         //_addressModel.postalCode.clear();
-                        _substituteModel.subDistrict = value;
+                        _spouseModelModel.subDistrictId = value;
                         //statusAddress = true;
                         setDataAddress();
                         setState(() {});
                       },
                       label: 'กรุณาเลือกตำบล/แขวง',
-                      value: _substituteModel.subDistrict,
+                      value: _spouseModelModel.subDistrictId,
                     ),
-                    edit: true,
+                    edit: statusForm,
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.postalCode.text,
+                    text: _spouseModelModel.postalCode.text,
                     title: 'รหัสไปรษณีย์',
-                    edit: true,
+                    edit: statusForm,
                     widget: MyTextfFieldNopading(
                       readOnly: true,
-                      controller: _substituteModel.postalCode,
+                      controller: _spouseModelModel.postalCode,
                       hintText: 'รหัสไปรษณีย์',
                       labelText: 'รหัสไปรษณีย์',
                     ),
                   ),
                   MyWidget.buildSizedBox('h', 18),
                   body(
-                    text: _substituteModel.degree ?? '',
-                    title: 'ระดับการศึกษา',
-                    edit: true,
-                    widget: mydropdown(
-                      listdata: _myDataAddress.dataEducation
-                          .map(
-                            (e) => DropdownMenuItem(
-                          value: e,
-                          child: Text(
-                            e.toString(),
-                            style: Theme.of(context).textTheme.body1,
-                          ),
-                        ),
-                      )
-                          .toList(),
-                      validator: MyValidate.checkEmptySelect,
-                      onChanged: (value) {
-                        _substituteModel.degree = value;
-                        //statusAddress = true;
-                        setState(() {});
-                      },
-                      label: 'ระดับการศึกษา',
-                      value: _substituteModel.degree,
-                    ),
-                  ),
-                  MyWidget.buildSizedBox('h', 18),
-                  body(
-                    text: _substituteModel.eduPlace.text,
-                    title: 'สถานศึกษา',
-                    edit: true,
-                    widget: MyTextfFieldNopading(
-                      //readOnly: true,
-                      controller: _substituteModel.eduPlace,
-                      hintText: 'สถานศึกษา',
-                      labelText: 'สถานศึกษา',
-                    ),
-                  ),
-                  MyWidget.buildSizedBox('h', 18),
-                  body(
-                    text: _substituteModel.tel.text,
+                    text: _spouseModelModel.tel.text,
                     title: 'เบอร์โทร',
-                    edit: true,
+                    edit: statusForm,
                     widget: MyTextfFieldNopading(
                       //readOnly: true,
-                      controller: _substituteModel.tel,
+                      controller: _spouseModelModel.tel,
+                      validator: MyValidate.checkPhoneNotEmpty,
+                      maxLength: 10,
                       hintText: 'เบอร์โทร',
                       labelText: 'เบอร์โทร',
-                    ),
-                  ),
-                  MyWidget.buildSizedBox('h', 18),
-                  body(
-                    text: _substituteModel.email.text,
-                    title: 'อีเมล์',
-                    edit: true,
-                    widget: MyTextfFieldNopading(
-                      //readOnly: true,
-                      controller: _substituteModel.email,
-                      validator: MyValidate.checkTextEmailNoEmy,
-                      hintText: 'อีเมล์',
-                      labelText: 'อีเมล์',
                     ),
                   ),
                   MyWidget.buildSizedBox('h', 18),
@@ -482,8 +433,12 @@ class _FormSpouseState extends State<FormSpouse> {
               children: [
                 Expanded(
                   child: Mybtn(
-                    text: 'ยืนยัน',
-                    ontap: () => checkEdit(),
+                    text: statusForm ? 'ยืนยัน' : 'แก้ไข',
+                    ontap: statusForm ? () => checkEdit() : () {
+                      setState(() {
+                        statusForm = true;
+                      });
+                    },
                     color: Color(0xffFA601B),
                   ),
                 ),
@@ -491,7 +446,7 @@ class _FormSpouseState extends State<FormSpouse> {
                 Expanded(
                   child: Mybtn(
                     text: 'ยกเลิก',
-                    ontap: () =>Navigator.pop(context),
+                    ontap: () => Navigator.pop(context),
                     color: Color(0xffFA601B),
                   ),
                 )

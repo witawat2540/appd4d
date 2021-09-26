@@ -123,7 +123,7 @@ class _FromPracticeState extends State<FromPractice> {
                 ),
                 MyWidget.buildSizedBox('h', 20),
                 Mytexth2(
-                  text: 'กรอกข้อมูลลงทะเบียน',
+                  text: 'ข้อมูลลงทะเบียน',
                   onbtn: true,
                 ),
                 MyWidget.buildSizedBox('h', 20),
