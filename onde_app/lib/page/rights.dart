@@ -21,8 +21,8 @@ class _RightsPageState extends State<RightsPage> {
     await ConnectAPI().get('user-rights').then((value) {
       if (value.statusCode == 200 || jsonDecode(value.body)['status'] == true) {
         setState(() {
-          _rightsModel = rightsModelFromJson(
-              jsonEncode(jsonDecode(value.body)['data']));
+          _rightsModel =
+              rightsModelFromJson(jsonEncode(jsonDecode(value.body)['data']));
           //print(_dataPractice[0].name);
         });
       }
@@ -75,7 +75,8 @@ class _RightsPageState extends State<RightsPage> {
               ),
               MyWidget.buildSizedBox('h', 18),
               body(
-                text: Unitity.buildTextCitizenId(_rightsModel.maimadPersonCode ?? ''),
+                text: Unitity.buildTextCitizenId(
+                    _rightsModel.maimadPersonCode ?? ''),
                 title: 'เลขประจำตัวคนพิการ 13 หลัก',
               ),
               MyWidget.buildSizedBox('h', 18),
@@ -180,7 +181,8 @@ class _RightsPageState extends State<RightsPage> {
               ),
               MyWidget.buildSizedBox('h', 18),
               body(
-                text: Unitity.buildTextCitizenId(_rightsModel.curatorPersonCode ?? '-'),
+                text: Unitity.buildTextCitizenId(
+                    _rightsModel.curatorPersonCode ?? ''),
                 title: 'เลขประจำตัวประชาชน ผู้ดูแลคนพิการ',
               ),
               MyWidget.buildSizedBox('h', 18),
@@ -225,7 +227,7 @@ class _RightsPageState extends State<RightsPage> {
               ),
               MyWidget.buildSizedBox('h', 18),
               body(
-                text:_rightsModel.curatorCurrSubdistrictName ?? '-',
+                text: _rightsModel.curatorCurrSubdistrictName ?? '-',
                 title: 'ข้อมูลที่อยู่ปัจจุบัน (ชื่อแขวง/ตำบล)',
               ),
               MyWidget.buildSizedBox('h', 18),
@@ -285,7 +287,9 @@ class _RightsPageState extends State<RightsPage> {
               ),
               MyWidget.buildSizedBox('h', 18),
               body(
-                text: _rightsModel.personSubtype ?? '-',
+                text: _rightsModel.personSubtype == 'Current'
+                    ? 'มีชีวิตอยู่'
+                    : 'เสียชีวิต',
                 title: 'สถานะบุคคล',
               ),
             ],

@@ -85,11 +85,11 @@ class SpouseModel {
     citizenId.text = json["citizen_id"] ?? '-';
     houseNo.text = json["house_no"] ?? '-';
     villageNo.text = json["village_no"] ?? '-';
-    provinceId = json["province_id"];
-    districtId = json["district_id"];
-    subDistrictId = json["sub_district_id"];
+    provinceId = int.parse(json["province_id"].toString());
+    districtId = int.parse(json["district_id"].toString());
+    subDistrictId = int.parse(json["sub_district_id"].toString());
     postalCode.text = json["postal_code"] ?? '-';
-    tel.text = json["tel"] ?? '-';
+    tel.text = json["tel"] ?? '';
     /*createdAt = DateTime.parse(json["created_at"]);
     updatedAt = DateTime.parse(json["updated_at"]);*/
     deletedAt = json["deleted_at"];

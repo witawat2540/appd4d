@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/contract_document.dart';
-import 'package:onde_app/page/device_details.dart';
+import 'package:onde_app/page/tutorial.dart';
 import 'package:onde_app/page/devicereturn.dart';
 import 'package:onde_app/page/docpage.dart';
 import 'package:onde_app/page/firstpage.dart';
@@ -10,6 +10,7 @@ import 'package:onde_app/page/helpfaqs.dart';
 import 'package:onde_app/page/listrequest.dart';
 import 'package:onde_app/page/login.dart';
 import 'package:onde_app/page/profile.dart';
+import 'package:onde_app/page/questionnaires.dart';
 import 'package:onde_app/page/register.dart';
 import 'package:onde_app/page/formpractice.dart';
 import 'package:onde_app/page/report.dart';
@@ -87,61 +88,55 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 20),
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 60, bottom: 20, left: 15),
-                    color: Colors.white38,
-                    alignment: Alignment.centerLeft,
-                    child: Image.asset(
-                      'images/logoapp.png',
-                      height: 54,
-                      width: 100,
-                    ),
+    return SafeArea(
+      child: Drawer(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: Container(
+            height: 500,
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 60, bottom: 20, left: 15),
+                        color: Colors.white38,
+                        alignment: Alignment.centerLeft,
+                        child: Image.asset(
+                          'images/logoapp.png',
+                          height: 54,
+                          width: 100,
+                        ),
+                      ),
+                      mylistnoicon(
+                        text: 'หน้าแรก',
+                        ontap: () {
+                          Navigator.pop(context);
+                          widget.gotopage(FirstPage());
+                        },
+                      ),
+                      //menuNotLogin(context)
+                      menuIsLogin(context),
+                      mylistnoicon(
+                        text: 'คนพิการทางการมองเห็น',
+                      ),
+                      mylistnoicon(
+                        text: "ออกจากระบบ",
+                        ontap: () {
+                          ConnectAPI.prefer.then((value) => value.clear());
+                          Navigator.pushAndRemoveUntil(
+                              context,
+                              Unitity.materialPageRoute(Login()),
+                                  (route) => false);
+                        },
+                      ),
+                    ],
                   ),
-                  mylistnoicon(
-                    text: 'หน้าแรก',
-                    ontap: () {
-                      Navigator.pop(context);
-                      widget.gotopage(FirstPage());
-                    },
-                  ),
-                  //menuNotLogin(context)
-                  menuIsLogin(context)
-                ],
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Container(
-                padding: EdgeInsets.only(bottom: 15),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    mylistnoicon(
-                      text: 'คนพิการทางการมองเห็น',
-                    ),
-                    mylistnoicon(
-                      text: "ออกจากระบบ",
-                      ontap: () {
-                        ConnectAPI.prefer.then((value) => value.clear());
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            Unitity.materialPageRoute(Login()),
-                            (route) => false);
-                      },
-                    ),
-                  ],
                 ),
-              ),
-            )
-          ],
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -212,7 +207,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                     text: 'รายละเอียดอุปกรณ์',
                     ontap: () {
                       Navigator.pop(context);
-                      widget.gotopage(DeviceDetail());
+                      widget.gotopage(Tutorial());
                     },
                   ),
                   MyListSub(
@@ -332,8 +327,15 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                 width: 0,
                 height: 0,
               ),
-        mylisticon(
+        /*mylisticon(
           text: 'ตอบแบบสอบถาม',
+        ),*/
+        mylistnoicon(
+          text: 'ตอบแบบสอบถาม',
+          ontap: () {
+            Navigator.pop(context);
+            widget.gotopage(Questionnaires());
+          },
         ),
         mylistnoicon(
           text: 'ระบบตรวจสอบสิทธิ',

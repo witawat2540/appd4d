@@ -4,7 +4,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:onde_app/model/addressmodel.dart';
+import 'package:onde_app/model/getsubstitute.dart';
 import 'package:onde_app/model/profilemodel.dart';
+import 'package:onde_app/model/spousemodel.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/fuction.dart';
 import 'package:onde_app/service/mycolors.dart';
@@ -13,6 +15,8 @@ import 'package:onde_app/service/mytextfild.dart';
 import 'package:onde_app/service/myunitity.dart';
 import 'package:onde_app/service/mywidget.dart';
 import 'package:onde_app/service/validate.dart';
+
+import 'formspouse.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -25,12 +29,14 @@ class _ProfileState extends State<Profile> {
   GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
   ProfileModel _profileModel = ProfileModel();
   AddressModel _addressModel = AddressModel();
+  Spouse? spouse = Spouse();
   String? nameDisabilityType = '';
   List<Map<String, dynamic>> disabilityType = [];
   bool editProfile = false,
       statusChanged = false,
       editAddress = false,
-      statusAddress = false;
+      statusAddress = false,
+      isDataSpouse = false;
   List dataPrefixName = [];
   List dataProvince = [];
   List dataDistrict = [];
@@ -46,6 +52,26 @@ class _ProfileState extends State<Profile> {
         setState(() {
           _profileModel.setText(jsonDecode(value.body)['data']);
           _addressModel.setText(jsonDecode(value.body)['data']['profile']);
+          // print(_addressModel.toJson());
+        });
+      }
+    });
+    await getDisabilityType();
+  }
+
+  Future<void> getSpouse() async {
+    await ConnectAPI().get('get-spouse').then((value) {
+      //print(value.body);
+      if (value.statusCode == 200 || jsonDecode(value.body)['status'] == true) {
+        setState(() {
+          if (jsonDecode(value.body)['data'] != null) {
+            setState(() {
+              isDataSpouse = true;
+              spouse =  Spouse.fromJson(jsonDecode(value.body)['data']);
+            });
+          }else{
+            spouse = null;
+          }
           // print(_addressModel.toJson());
         });
       }
@@ -105,12 +131,12 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-
   Future<void> sendUpdateAddress() async {
     //print(jsonEncode(modelData.toJson()));
-    if(_keyForm.currentState!.validate()){
+    if (_keyForm.currentState!.validate()) {
       await ConnectAPI()
-          .postHeaders(jsonEncode(_addressModel.toJson()), 'update-profile-address')
+          .postHeaders(
+              jsonEncode(_addressModel.toJson()), 'update-profile-address')
           .then((value) async {
         if (value.statusCode == 200) {
           MyWidget.showInSnackBarContext('บันทึกสำเร็จ', Colors.white, context,
@@ -118,8 +144,8 @@ class _ProfileState extends State<Profile> {
           statusAddress = false;
           this.getProfile();
         } else {
-          MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
-              Colors.redAccent, 2, Icons.close);
+          MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white,
+              context, Colors.redAccent, 2, Icons.close);
         }
       }).catchError((onError) {
         MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
@@ -203,6 +229,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     this.getProfile();
     this.setData();
+    this.getSpouse();
     // this.getDisabilityType();
     super.initState();
   }
@@ -225,8 +252,15 @@ class _ProfileState extends State<Profile> {
               ),
               MyWidget.buildSizedBox('h', 18),
               Mybtn(
-                text: 'เพิ่มข้อมูลคู่สมรส',
-                ontap: () {},
+                text: isDataSpouse ? 'ดูข้อมูลคู่สมรส' : 'เพิ่มข้อมูลคู่สมรส',
+                ontap: () => Navigator.push(
+                  context,
+                  Unitity.materialPageRoute(
+                    FormSpouse(
+                      data: spouse,
+                    ),
+                  ),
+                ).then((value) => getSpouse()),
               ),
               MyWidget.buildSizedBox('h', 18),
               Mytexth2(
@@ -435,32 +469,18 @@ class _ProfileState extends State<Profile> {
                     editAddress = false;
                   });
                 },
-               /* onTap: statusAddress || !editAddress
+                onTap: statusAddress || !editAddress
                     ? () {
                         setState(() {
                           editAddress = true;
                         });
                         if (statusAddress == true) {
-                          //sendUpdateProfile();
                           sendUpdateAddress();
                           setState(() {
                             editAddress = !editAddress;
                           });
                         }
                       }
-                    : null,*/
-                onTap: statusAddress || !editAddress
-                    ? () {
-                  setState(() {
-                    editAddress = true;
-                  });
-                  if (statusAddress == true) {
-                    sendUpdateAddress();
-                    setState(() {
-                      editAddress = !editAddress;
-                    });
-                  }
-                }
                     : null,
               ),
               Form(
@@ -484,7 +504,6 @@ class _ProfileState extends State<Profile> {
                       text: _addressModel.villageNo.text,
                       title: 'หมู่ที่',
                       edit: editAddress,
-
                       widget: MyTextfFieldNopading(
                         onChanged: textAddress,
                         controller: _addressModel.villageNo,
@@ -511,13 +530,13 @@ class _ProfileState extends State<Profile> {
                         listdata: dataProvince
                             .map(
                               (e) => DropdownMenuItem(
-                            value: e['name_th'],
-                            child: Text(
-                              e['name_th'].toString(),
-                              style: Theme.of(context).textTheme.body1,
-                            ),
-                          ),
-                        )
+                                value: e['name_th'],
+                                child: Text(
+                                  e['name_th'].toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                ),
+                              ),
+                            )
                             .toList(),
                         onChanged: (value) {
                           setState(() {
@@ -541,13 +560,13 @@ class _ProfileState extends State<Profile> {
                         listdata: dataDistrict
                             .map(
                               (e) => DropdownMenuItem(
-                            value: e['name_th'],
-                            child: Text(
-                              e['name_th'].toString(),
-                              style: Theme.of(context).textTheme.body1,
-                            ),
-                          ),
-                        )
+                                value: e['name_th'],
+                                child: Text(
+                                  e['name_th'].toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                ),
+                              ),
+                            )
                             .toList(),
                         onChanged: (value) {
                           //_addressModel.subDistrict = null;
@@ -569,13 +588,13 @@ class _ProfileState extends State<Profile> {
                         listdata: dataSubDistrict
                             .map(
                               (e) => DropdownMenuItem(
-                            value: e['name_th'],
-                            child: Text(
-                              e['name_th'].toString(),
-                              style: Theme.of(context).textTheme.body1,
-                            ),
-                          ),
-                        )
+                                value: e['name_th'],
+                                child: Text(
+                                  e['name_th'].toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                ),
+                              ),
+                            )
                             .toList(),
                         onChanged: (value) {
                           //_addressModel.postalCode.clear();
@@ -610,13 +629,13 @@ class _ProfileState extends State<Profile> {
                         listdata: dataEducation
                             .map(
                               (e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(
-                              e.toString(),
-                              style: Theme.of(context).textTheme.body1,
-                            ),
-                          ),
-                        )
+                                value: e,
+                                child: Text(
+                                  e.toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                ),
+                              ),
+                            )
                             .toList(),
                         onChanged: (value) {
                           _addressModel.eduLevel = value;
@@ -632,7 +651,6 @@ class _ProfileState extends State<Profile> {
                       text: _addressModel.eduPlace.text,
                       title: 'สถานศึกษา',
                       edit: editAddress,
-
                       widget: mytextfield(
                         onChanged: textAddress,
                         controller: _addressModel.eduPlace,
@@ -648,13 +666,13 @@ class _ProfileState extends State<Profile> {
                         listdata: dataProvince
                             .map(
                               (e) => DropdownMenuItem(
-                            value: e['name_th'],
-                            child: Text(
-                              e['name_th'].toString(),
-                              style: Theme.of(context).textTheme.body1,
-                            ),
-                          ),
-                        )
+                                value: e['name_th'],
+                                child: Text(
+                                  e['name_th'].toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                ),
+                              ),
+                            )
                             .toList(),
                         onChanged: (value) {
                           setState(() {
@@ -677,13 +695,13 @@ class _ProfileState extends State<Profile> {
                         listdata: dataEducDistrict
                             .map(
                               (e) => DropdownMenuItem(
-                            value: e['name_th'],
-                            child: Text(
-                              e['name_th'].toString(),
-                              style: Theme.of(context).textTheme.body1,
-                            ),
-                          ),
-                        )
+                                value: e['name_th'],
+                                child: Text(
+                                  e['name_th'].toString(),
+                                  style: Theme.of(context).textTheme.body1,
+                                ),
+                              ),
+                            )
                             .toList(),
                         onChanged: (value) {
                           setState(() {
@@ -709,7 +727,7 @@ class _ProfileState extends State<Profile> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -717,7 +735,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  /*buildTextCitizenId(String? test) {
+/*buildTextCitizenId(String? test) {
     String text = '';
     if (test!.isNotEmpty) {
       text += '${test.substring(0, 1)}-';

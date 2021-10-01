@@ -13,9 +13,9 @@ class Unitity {
     );
   }
 
-  static String buildTextCitizenId(String test) {
+  static String buildTextCitizenId(String? test) {
     String text = '';
-    if (test.isNotEmpty) {
+    if (test!.isNotEmpty) {
       text += '${test.substring(0, 1)}-';
       text += '${test.substring(1, 5)}-';
       text += '${test.substring(5, 10)}-';

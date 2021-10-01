@@ -20,10 +20,9 @@ import 'fuction.dart';
 class FormSpouse extends StatefulWidget {
   //final bool? statusEdit;
   final int? idSubstitute;
+  final Spouse? data;
 
-  //final Datum? data;
-
-  const FormSpouse({Key? key, this.idSubstitute}) : super(key: key);
+  const FormSpouse({Key? key, this.idSubstitute, this.data}) : super(key: key);
 
   @override
   _FormSpouseState createState() => _FormSpouseState();
@@ -104,6 +103,31 @@ class _FormSpouseState extends State<FormSpouse> {
           .postHeaders(jsonEncode(_spouseModelModel.toJson()),
               'substitute/spouse/create')
           .then((value) async {
+            print(value.body);
+        if (value.statusCode == 200) {
+          //Navigator.pop(context,true);
+          setState(() {});
+          statusForm = false;
+          MyWidget.showInSnackBar('บันทึกสำเร็จ', Colors.white, _keyScaffold,
+              MyColors.colorText_bule, 2, Icons.check_circle);
+        } else {
+          MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
+              Colors.redAccent, 2, Icons.close);
+        }
+      }).catchError((onError) {
+        MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
+            Colors.redAccent, 2, Icons.close);
+      });
+    }
+  }
+
+  Future<void> sendSpouseProfile() async {
+    //print(jsonEncode(modelData.toJson()));
+    //_spouseModelModel.substituteId = widget.idSubstitute;
+    if (_keyForm.currentState!.validate()) {
+      await ConnectAPI()
+          .postHeaders(jsonEncode(_spouseModelModel.toJson()), 'create-spouse')
+          .then((value) async {
         if (value.statusCode == 200) {
           //Navigator.pop(context,true);
           setState(() {});
@@ -122,46 +146,84 @@ class _FormSpouseState extends State<FormSpouse> {
   }
 
   checkEdit() {
-    if(statusForm){
-      //this.updateSubstitute();
-      setState(() {
-        statusForm = false;
-      });
+    if(widget.data == null){
+      widget.idSubstitute == null
+          ? sendSpouseProfile()
+          : sendSpouseSubstitute();
     }else{
-      sendSpouseSubstitute();
+      widget.idSubstitute == null
+          ? this.updateSpouseProfile()
+          : this.updateSpouseSubstitute();
     }
+    /*if (!statusForm) {
+
+    } else {
+
+    }*/
   }
 
-  /*Future<void> updateSubstitute() async {
+  Future<void> updateSpouseSubstitute() async {
     //print(jsonEncode(modelData.toJson()));
+    _spouseModelModel.substituteId = widget.idSubstitute;
     if (_keyForm.currentState!.validate()) {
       await ConnectAPI()
-          .postHeaders(
-          jsonEncode(_substituteModel.toJson()), 'update-substitute')
+          .postHeaders(jsonEncode(_spouseModelModel.toJson()),
+              'substitute/spouse/update')
           .then((value) async {
         if (value.statusCode == 200) {
-          Navigator.pop(context,true);
+          setState(() {});
+          statusForm = false;
+          MyWidget.showInSnackBar('บันทึกสำเร็จ', Colors.white, _keyScaffold,
+              MyColors.colorText_bule, 2, Icons.check_circle);
         } else {
-          MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white,
-              context, Colors.redAccent, 2, Icons.close);
+          MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
+              Colors.redAccent, 2, Icons.close);
         }
       }).catchError((onError) {
-        MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+        MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
             Colors.redAccent, 2, Icons.close);
       });
     }
-  }*/
+  }
+
+  Future<void> updateSpouseProfile() async {
+    //print(jsonEncode(modelData.toJson()));
+    // _spouseModelModel.substituteId = widget.idSubstitute;
+    if (_keyForm.currentState!.validate()) {
+      await ConnectAPI()
+          .postHeaders(jsonEncode(_spouseModelModel.toJson()), 'update-spouse')
+          .then((value) async {
+        if (value.statusCode == 200) {
+          setState(() {});
+          statusForm = false;
+          MyWidget.showInSnackBar('บันทึกสำเร็จ', Colors.white, _keyScaffold,
+              MyColors.colorText_bule, 2, Icons.check_circle);
+        } else {
+          MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
+              Colors.redAccent, 2, Icons.close);
+        }
+      }).catchError((onError) {
+        MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white, _keyScaffold,
+            Colors.redAccent, 2, Icons.close);
+      });
+    }else{
+      print(_keyForm.currentState!.validate());
+    }
+  }
 
   @override
   void initState() {
-    /* if(widget.statusEdit??false == true){
-      //print();
+    if (widget.data != null) {
+      setState(() {
+        statusForm = false;
+      });
       this.setDataAddress();
-      //_spouseModelModel.setText(widget.data!.toJson());
-    }else{
+      _spouseModelModel.setText(widget.data!.toJson());
+    } else {
       this.setDataAddress();
-    }*/
-    this.setDataAddress();
+    }
+    print(statusForm);
+    //this.setDataAddress();
     super.initState();
   }
 
@@ -427,18 +489,20 @@ class _FormSpouseState extends State<FormSpouse> {
         ),
         bottomNavigationBar: SafeArea(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Expanded(
                   child: Mybtn(
                     text: statusForm ? 'ยืนยัน' : 'แก้ไข',
-                    ontap: statusForm ? () => checkEdit() : () {
-                      setState(() {
-                        statusForm = true;
-                      });
-                    },
+                    ontap: statusForm
+                        ? () => checkEdit()
+                        : () {
+                            setState(() {
+                              statusForm = true;
+                            });
+                          },
                     color: Color(0xffFA601B),
                   ),
                 ),

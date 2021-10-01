@@ -122,9 +122,9 @@ class Mysutitle extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: MediaQuery.of(context).size.width - 80,
+          width: MediaQuery.of(context).size.width - 50,
           margin: EdgeInsets.symmetric(vertical: vertical),
-          //color: Colors.black45,
+         // color: Colors.black45,
           child: Text(
             "$text",
           ),

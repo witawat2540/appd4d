@@ -206,19 +206,25 @@ class _RepresentativeState extends State<Representative> {
                         Expanded(
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                                fixedSize: Size(0, 49),
-                                primary: Color(0xffFA601B)),
-                            child: Text('เพิ่มข้อมูลคู่สมรส'),
+                              fixedSize: Size(0, 49),
+                              primary: Color(
+                                e.spouse != null ? 0xff03a9f4 : 0xffFA601B,
+                              ),
+                            ),
+                            child: Text(
+                              e.spouse != null
+                                  ? 'ดูข้อมูลคู่สมรส'
+                                  : 'เพิ่มข้อมูลคู่สมรส',
+                            ),
                             onPressed: () => Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => FormSpouse(
                                     idSubstitute: e.id,
+                                    data: e.spouse,
                                   ),
                                 )).then((value) {
-                              if (value ?? false) {
-                                getSubstitute();
-                              }
+                              getSubstitute();
                             }),
                           ),
                         ),
