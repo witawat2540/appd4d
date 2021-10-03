@@ -7,7 +7,7 @@ import 'package:onde_app/page/docpage.dart';
 import 'package:onde_app/page/firstpage.dart';
 import 'package:onde_app/page/helpdesks.dart';
 import 'package:onde_app/page/helpfaqs.dart';
-import 'package:onde_app/page/listrequest.dart';
+import 'package:onde_app/page/formborrow.dart';
 import 'package:onde_app/page/login.dart';
 import 'package:onde_app/page/profile.dart';
 import 'package:onde_app/page/questionnaires.dart';
@@ -186,9 +186,6 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
         mylisticon(
           text: 'ระบบยืมอุปกรณ์',
           ontap: () {
-            /* Navigator.pop(context);
-            //gotopage(DeviceDetail());
-            widget.gotopage(Training());*/
             if (Unitity.indexMenu == 1) {
               setState(() {
                 Unitity.indexMenu = null;
@@ -253,7 +250,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                     text: 'แบบคำขอยืมอุปกรณ์ฯ ทก.01',
                     ontap: () {
                       Navigator.pop(context);
-                      //widget.gotopage(ListRequest());
+                      widget.gotopage(FormBorrow());
                     },
                   ),
                   MyListSub(

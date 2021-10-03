@@ -5,6 +5,7 @@ import 'package:onde_app/model/practiceformmodel.dart';
 import 'package:onde_app/model/practicemodel.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/profile.dart';
+import 'package:onde_app/service/mycolors.dart';
 import 'package:onde_app/service/mydropdown.dart';
 import 'package:onde_app/service/mytextfild.dart';
 import 'package:onde_app/service/mywidget.dart';
@@ -57,6 +58,8 @@ class _FromPracticeState extends State<FromPractice> {
     /*MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white,
         _keyScaffoldState, Colors.redAccent, 2, Icons.close);*/
   }
+
+
 
   Future setDataGroupId() async {
     await MyFunction.getGroupId().then((value) {

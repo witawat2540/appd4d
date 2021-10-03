@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ConnectAPI {
   static String url = 'https://pwds.d4dthai.com/api/';
+  static String urlBASE  = 'https://pwds.d4dthai.com/';
   static String urlDoc = 'https://pwds.d4dthai.com/';
 
   //String urlpic = 'http://www.jpos2.com:1800';

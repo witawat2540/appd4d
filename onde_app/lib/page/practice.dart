@@ -31,6 +31,8 @@ class _PracticeState extends State<Practice> {
     });
   }
 
+
+
   @override
   void initState() {
     this._getDataPractice();
@@ -93,7 +95,10 @@ class _PracticeState extends State<Practice> {
                         Navigator.push(
                           context,
                           Unitity.materialPageRoute(
-                            FromPractice(isForm: true,dataPractice: e,),
+                            FromPractice(
+                              isForm: true,
+                              dataPractice: e,
+                            ),
                           ),
                         );
                       },

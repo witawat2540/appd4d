@@ -24,7 +24,7 @@ class GetTutorialModel {
   factory GetTutorialModel.fromJson(Map<String, dynamic> json) =>
       GetTutorialModel(
         status: json["status"],
-        hasbooking: Hasbooking.fromJson(json["hasbooking"]),
+        hasbooking:json['hasbooking']==null?null: Hasbooking.fromJson(json["hasbooking"]),
         data: Data.fromJson(json["data"]),
       );
 

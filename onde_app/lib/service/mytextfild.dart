@@ -5,6 +5,7 @@ class mytextfield extends StatelessWidget {
   final String? hintText, labelText;
   final suffixIcon;
   final VoidCallback? onTap;
+  final Widget? counter;
   final int? maxLength;
   final bool obscureText;
   final Function? validator, onChanged;
@@ -29,7 +30,7 @@ class mytextfield extends StatelessWidget {
     this.readOnly = false,
     this.maxLength,
     this.onChanged,
-    this.labelText, this.maxLines,
+    this.labelText, this.maxLines, this.counter,
     // this.maxLines,
   }) : super(key: key);
 
@@ -50,6 +51,7 @@ class mytextfield extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyText2,
         keyboardType: keyboardType,
         decoration: InputDecoration(
+          counter: counter,
           labelText: labelText,
           hintText: hintText,
           errorStyle: TextStyle(color: Colors.redAccent,fontSize: 13),

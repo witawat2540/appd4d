@@ -80,6 +80,27 @@ class _TutorialState extends State<Tutorial> {
     });
   }
 
+  Future sendBooking(int id) async {
+    await ConnectAPI()
+        .postHeaders(jsonEncode({'assetCategoryId': id}), 'booking')
+        .then((value) async {
+      if (value.statusCode == 200 && jsonDecode(value.body)['status'] == true) {
+        // Navigator.pop(context, true);
+        this._getDataTutorial();
+        MyWidget.showInSnackBarContext('ทำรายการสำเร็จ', Colors.white, context,
+            MyColors.colorText_bule, 3, Icons.check_circle);
+      } else {
+        MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+            Colors.redAccent, 2, Icons.close);
+      }
+    }).catchError((onError) {
+      MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+          Colors.redAccent, 2, Icons.close);
+    });
+    /*MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white,
+        _keyScaffoldState, Colors.redAccent, 2, Icons.close);*/
+  }
+
   /*List setNameDetail(Map<String, dynamic> data, Map<String, dynamic> dataDevice,
       Map<String, dynamic> image) {
     var newData = [];
@@ -178,6 +199,9 @@ class _TutorialState extends State<Tutorial> {
                                           ? detailDevice['doc']
                                           : ConnectAPI.urlDoc +
                                               detailDevice['doc'],
+                                      onTapBookmark: _getTutorialModel.hasbooking == null ? (){
+                                        sendBooking(detailDevice['id']);
+                                      }:null,
                                       url: detailDevice['url'],
                                       num:
                                           '${Unitity.f.format(detailDevice['count'])}',
@@ -277,7 +301,7 @@ class MyCardDevice extends StatelessWidget {
   final String title, num;
   final Uint8List bytes;
 
-  //final VoidCallback? onTapBookmark;
+  final VoidCallback? onTapBookmark;
   final String? doc;
   final String? url;
 
@@ -285,7 +309,7 @@ class MyCardDevice extends StatelessWidget {
     Key? key,
     required this.title,
     required this.num,
-    //this.onTapBookmark,
+    this.onTapBookmark,
     required this.bytes,
     this.doc,
     this.url,
@@ -350,9 +374,11 @@ class MyCardDevice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 CircleAvatar(
-                  backgroundColor: MyColors.colorText_bule,
+                  backgroundColor: onTapBookmark == null
+                      ? Colors.grey
+                      : MyColors.colorText_bule,
                   child: IconButton(
-                    onPressed: () {},
+                    onPressed: onTapBookmark,
                     splashRadius: 20,
                     icon: Icon(
                       Icons.bookmark,
@@ -378,9 +404,16 @@ class MyCardDevice extends StatelessWidget {
                   backgroundColor:
                       url == null ? Colors.grey : MyColors.colorText_bule,
                   child: IconButton(
-                    onPressed: url == null ? null : () {
-                      showDialog(context: context, builder: (context) => DialogVideo(tagIfreme: url,),);
-                    },
+                    onPressed: url == null
+                        ? null
+                        : () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => DialogVideo(
+                                tagIfreme: url,
+                              ),
+                            );
+                          },
                     splashRadius: 20,
                     icon: Icon(
                       Icons.play_circle_fill,

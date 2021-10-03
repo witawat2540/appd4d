@@ -5,6 +5,12 @@ class MyValidate{
     }
   }
 
+  static String? checkEmptyFile(String? value){
+    if(value!.isEmpty){
+      return 'กรุณาอัฟโหลดไฟล์';
+    }
+  }
+
   static String? checkEmptySelect(value){
     if(value == null){
       return 'กรุณาเลือกช่องนี้';
