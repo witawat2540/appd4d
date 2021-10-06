@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:onde_app/network/connect.dart';
+import 'package:onde_app/page/approval_results.dart';
 import 'package:onde_app/page/contract_document.dart';
+import 'package:onde_app/page/form_receive.dart';
 import 'package:onde_app/page/tutorial.dart';
 import 'package:onde_app/page/devicereturn.dart';
 import 'package:onde_app/page/docpage.dart';
@@ -128,7 +131,7 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                           Navigator.pushAndRemoveUntil(
                               context,
                               Unitity.materialPageRoute(Login()),
-                                  (route) => false);
+                              (route) => false);
                         },
                       ),
                     ],
@@ -257,9 +260,10 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                     text: 'แบบคำขอรับอุปกรณ์ฯ ทก.02',
                     ontap: () {
                       Navigator.pop(context);
-                      // widget.gotopage(Training());
+                      widget.gotopage(FormReceive());
                     },
                   ),
+
                 ],
               )
             : Container(
@@ -268,7 +272,69 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
               ),
         mylisticon(
           text: 'ผลการพิจารณา',
+          ontap: () {
+            if (Unitity.indexMenu == 3) {
+              setState(() {
+                Unitity.indexMenu = null;
+              });
+            } else {
+              setState(() {
+                Unitity.indexMenu = 3;
+              });
+            }
+          },
         ),
+        Unitity.indexMenu == 3
+            ? Column(
+                children: [
+                  MyListSub(
+                    text: 'แบบสรุปผลการพิจารณาอนุมัติการขอยืมอุปกรณ์ฯ ทก.09',
+                    ontap: () {
+                      Navigator.pop(context);
+                      widget.gotopage(ApprovalResults());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'แบบสรุปผลการพิจารณายกเลิกการขอยืมอุปกรณ์ฯ ทก.10',
+                    ontap: () {
+                      Navigator.pop(context);
+                      //widget.gotopage(FormBorrow());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'แบบสรุปผลการพิจารณาอนุมัติการขอรับอุปกรณ์ฯ ทก.11',
+                    ontap: () {
+                      Navigator.pop(context);
+                      //widget.gotopage(FormBorrow());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'แบบสรุปผลการพิจารณายกเลิกการขอรับอุปกรณ์ฯ ทก.12',
+                    ontap: () {
+                      Navigator.pop(context);
+                      //widget.gotopage(FormBorrow());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'แบบสรุปผลการขอยืมอุปกรณ์เสร็จสิ้น',
+                    ontap: () {
+                      Navigator.pop(context);
+                      //widget.gotopage(FormBorrow());
+                    },
+                  ),
+                  MyListSub(
+                    text: 'แบบสรุปผลการขอรับอุปกรณ์เสร็จสิ้น',
+                    ontap: () {
+                      Navigator.pop(context);
+                      //widget.gotopage(FormBorrow());
+                    },
+                  ),
+                ],
+              )
+            : Container(
+                width: 0,
+                height: 0,
+              ),
         mylisticon(
           text: 'ส่งคืนอุปกรณ์',
           ontap: () {
