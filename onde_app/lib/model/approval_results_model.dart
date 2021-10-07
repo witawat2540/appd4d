@@ -107,7 +107,7 @@ class Datum {
     objective: json["objective"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
-    deletedAt: json["deleted_at"],
+    deletedAt: json['deleted_at'] == null ? null : DateTime.parse(json['deleted_at']),
     office: json["office"],
     city: json["city"],
     remark: json["remark"],
@@ -123,8 +123,12 @@ class Datum {
     docContractsId: json["doc_contracts_id"],
     docGarunteeId: json["doc_garuntee_id"],
     reason: json["reason"],
-    category: Category.fromJson(json["category"]),
-    asset: Asset.fromJson(json["asset"]),
+    category: json['category'] != null
+        ? new Category.fromJson(json['category'])
+        : null,
+    asset: json['asset'] != null
+        ? new Asset.fromJson(json['asset'])
+        : null
   );
 
   Map<String, dynamic> toJson() => {

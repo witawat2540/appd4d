@@ -3,7 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/approval_results.dart';
 import 'package:onde_app/page/contract_document.dart';
+import 'package:onde_app/page/form05sDone.dart';
+import 'package:onde_app/page/form05sDone11.dart';
 import 'package:onde_app/page/form_receive.dart';
+import 'package:onde_app/page/rejectResults.dart';
 import 'package:onde_app/page/tutorial.dart';
 import 'package:onde_app/page/devicereturn.dart';
 import 'package:onde_app/page/docpage.dart';
@@ -21,6 +24,8 @@ import 'package:onde_app/page/representative.dart';
 import 'package:onde_app/page/practice.dart';
 import 'package:onde_app/page/rights.dart';
 import 'package:onde_app/service/mywidget.dart';
+import 'package:onde_app/page/disapprovalResults.dart';
+import 'package:onde_app/page/receiveResults.dart';
 
 import 'myunitity.dart';
 
@@ -298,35 +303,35 @@ class _MyDrawerState extends State<MyDrawer> with TickerProviderStateMixin {
                     text: 'แบบสรุปผลการพิจารณายกเลิกการขอยืมอุปกรณ์ฯ ทก.10',
                     ontap: () {
                       Navigator.pop(context);
-                      //widget.gotopage(FormBorrow());
+                      widget.gotopage(DisapprovalResults());
                     },
                   ),
                   MyListSub(
                     text: 'แบบสรุปผลการพิจารณาอนุมัติการขอรับอุปกรณ์ฯ ทก.11',
                     ontap: () {
                       Navigator.pop(context);
-                      //widget.gotopage(FormBorrow());
+                      widget.gotopage(ReceiveResults());
                     },
                   ),
                   MyListSub(
                     text: 'แบบสรุปผลการพิจารณายกเลิกการขอรับอุปกรณ์ฯ ทก.12',
                     ontap: () {
                       Navigator.pop(context);
-                      //widget.gotopage(FormBorrow());
+                      widget.gotopage(RejectResults());
                     },
                   ),
                   MyListSub(
                     text: 'แบบสรุปผลการขอยืมอุปกรณ์เสร็จสิ้น',
                     ontap: () {
                       Navigator.pop(context);
-                      //widget.gotopage(FormBorrow());
+                      widget.gotopage(Form05sDone());
                     },
                   ),
                   MyListSub(
                     text: 'แบบสรุปผลการขอรับอุปกรณ์เสร็จสิ้น',
                     ontap: () {
                       Navigator.pop(context);
-                      //widget.gotopage(FormBorrow());
+                      widget.gotopage(Form05sDone11());
                     },
                   ),
                 ],

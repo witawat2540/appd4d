@@ -1,11 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="0cda9e92-17f2-47df-b25e-5701941ff0e8" name="Default Changelist" comment="" />
+    <list default="true" id="0cda9e92-17f2-47df-b25e-5701941ff0e8" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/model/Form05DoneModel.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/model/disapprovalResultsModel.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/model/receiveResultsModel.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/page/disapprovalResults.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/page/form05sDone.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/page/form05sDone11.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/page/receiveResults.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/onde_app/lib/page/rejectResults.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/onde.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/onde.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onde_app/lib/model/approval_results_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/onde_app/lib/model/approval_results_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onde_app/lib/service/mydrawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/onde_app/lib/service/mydrawer.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/onde_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/onde_app/pubspec.lock" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\Home\.android\avd\Pixel_3a_API_30_x86.avd]" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -20,8 +46,20 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/Library/Android/sdk" />
     <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="FlutterRunConfigurationType" factoryName="Flutter">
+      <option name="filePath" value="$PROJECT_DIR$/onde_app/lib/main.dart" />
+      <method v="2" />
+    </configuration>
+    <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" nameIsGenerated="true">
+      <option name="filePath" value="$PROJECT_DIR$/onde_app/lib/main.dart" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -33,5 +71,17 @@
       <updated>1631894506985</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
