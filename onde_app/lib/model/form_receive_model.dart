@@ -4,9 +4,11 @@
 
 import 'dart:convert';
 
-GetFormReceiveModel getFormReceiveModelFromJson(String str) => GetFormReceiveModel.fromJson(json.decode(str));
+GetFormReceiveModel getFormReceiveModelFromJson(String str) =>
+    GetFormReceiveModel.fromJson(json.decode(str));
 
-String getFormReceiveModelToJson(GetFormReceiveModel data) => json.encode(data.toJson());
+String getFormReceiveModelToJson(GetFormReceiveModel data) =>
+    json.encode(data.toJson());
 
 class GetFormReceiveModel {
   GetFormReceiveModel({
@@ -17,15 +19,16 @@ class GetFormReceiveModel {
   bool? status;
   List<Datum>? data;
 
-  factory GetFormReceiveModel.fromJson(Map<String, dynamic> json) => GetFormReceiveModel(
-    status: json["status"],
-    data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
-  );
+  factory GetFormReceiveModel.fromJson(Map<String, dynamic> json) =>
+      GetFormReceiveModel(
+        status: json["status"],
+        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+      );
 
   Map<String, dynamic> toJson() => {
-    "status": status,
-    "data": List<dynamic>.from(data!.map((x) => x.toJson())),
-  };
+        "status": status,
+        "data": List<dynamic>.from(data!.map((x) => x.toJson())),
+      };
 }
 
 class Datum {
@@ -42,18 +45,18 @@ class Datum {
   int? total;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    position: json["position"],
-    form: Form.fromJson(json["form"]),
-    asset: json["asset"],
-    total: json["total"],
-  );
+        position: json["position"],
+        form: Form.fromJson(json["form"]),
+        asset: json["asset"],
+        total: json["total"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "position": position,
-    "form": form!.toJson(),
-    "asset": asset,
-    "total": total,
-  };
+        "position": position,
+        "form": form!.toJson(),
+        "asset": asset,
+        "total": total,
+      };
 }
 
 class Form {
@@ -70,16 +73,16 @@ class Form {
   DateTime? sendDate;
 
   factory Form.fromJson(Map<String, dynamic> json) => Form(
-    id: json["id"],
-    typeStatus: json["type_status"],
-    createdAt: DateTime.parse(json["created_at"]),
-    sendDate: DateTime.parse(json["send_date"]),
-  );
+        id: json["id"],
+        typeStatus: json["type_status"],
+        createdAt: DateTime.parse(json["created_at"]),
+        sendDate: json['send_date'] == null ? null : DateTime.parse(json["send_date"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "type_status": typeStatus,
-    "created_at": createdAt!.toIso8601String(),
-    "send_date": sendDate!.toIso8601String(),
-  };
+        "id": id,
+        "type_status": typeStatus,
+        "created_at": createdAt!.toIso8601String(),
+        "send_date": sendDate!.toIso8601String(),
+      };
 }

@@ -139,7 +139,7 @@ class MycardList extends StatelessWidget {
   }) : super(key: key);
 
   Future<void> _gotoWeb(String url) async {
-    //print(url);
+    print(url);
     if (await canLaunch(url)) {
       await launch(url);
     } else {

@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:onde_app/model/form_receive_model.dart';
 import 'package:onde_app/network/connect.dart';
+import 'package:onde_app/service/mycolors.dart';
+import 'package:onde_app/service/myunitity.dart';
 import 'package:onde_app/service/mywidget.dart';
 
+import 'add_form_receive.dart';
 import 'formborrow.dart';
 
 class FormReceive extends StatefulWidget {
@@ -28,6 +31,25 @@ class _FormReceiveState extends State<FormReceive> {
         });
       }
       //this.setDataAddress();
+    });
+  }
+
+  Future _sendAuditorFormReceive(int id) async {
+    await ConnectAPI()
+        .postHeaders(jsonEncode({"id": id}), 'sent-auditor-form-receive')
+        .then((value) {
+      if (value.statusCode == 200 || jsonDecode(value.body)['status'] == true) {
+        _getFormReceive();
+        MyWidget.showInSnackBarContext('ทำรายการสำเร็จ', Colors.white, context,
+            MyColors.colorText_bule, 3, Icons.check_circle);
+      } else {
+        MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+            Colors.redAccent, 2, Icons.close);
+      }
+      //this.setDataAddress();
+    }).catchError((onError) {
+      MyWidget.showInSnackBarContext('เกิดข้อผิดพลาด', Colors.white, context,
+          Colors.redAccent, 2, Icons.close);
     });
   }
 
@@ -62,9 +84,9 @@ class _FormReceiveState extends State<FormReceive> {
                     num: '${e.form?.id ?? ''}',
                     unit: '1 หน่วย',
                     name: 'อุปกรณ์ ${e.asset ??'0'}',
-                    //onTapSend: () => _sendAuditorForm(e.id!.toInt()),
-                    url: e.form!.id.toString(),
-                    sendStatus: false,
+                    onTapSend: () => _sendAuditorFormReceive(e.form!.id!.toInt()),
+                    url: 'receive/'+e.form!.id.toString(),
+                    sendStatus: e.form!.sendDate == null ? true:false,
                     startdate:
                     '${DateFormat('dd-MM-yyyy HH:mm:ss').format(e.form!.createdAt!)}',
                     //enddate: '',
@@ -73,7 +95,23 @@ class _FormReceiveState extends State<FormReceive> {
                         : '${DateFormat('dd-MM-yyyy HH:mm:ss').format(e.form!.sendDate!.toLocal())}',
                   );
                 }).toList() ?? [],
-              )
+              ),
+              Mybtn(
+                text: 'สร้างแบบ ทก.02',
+                color: Colors.green,
+                ontap: () => Navigator.push(
+                  context,
+                  Unitity.materialPageRoute(
+                    AddFromReceive(),
+                  ),
+                ).then((value){
+                  if(value??false){
+                    _getFormReceive();
+                    MyWidget.showInSnackBarContext('ทำรายการสำเร็จ', Colors.white, context,
+                        MyColors.colorText_bule, 3, Icons.check_circle);
+                  }
+                }),
+              ),
             ],
           ),
         ),
