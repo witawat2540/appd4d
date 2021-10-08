@@ -3,27 +3,26 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:onde_app/model/approval_results_model.dart';
+import 'package:onde_app/model/receiveResultsModel.dart';
 import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/service/mywidget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ApprovalResults extends StatefulWidget {
-  const ApprovalResults({Key? key}) : super(key: key);
+class RejectResults extends StatefulWidget {
+  const RejectResults({Key? key}) : super(key: key);
 
   @override
-  _ApprovalResultsState createState() => _ApprovalResultsState();
+  _RejectResultsState createState() => _RejectResultsState();
 }
 
-class _ApprovalResultsState extends State<ApprovalResults> {
-  ApprovalResultsModel _approvalResultsModel = ApprovalResultsModel();
+class _RejectResultsState extends State<RejectResults> {
+  ReceiveResultsModel _rejectResultsModel = ReceiveResultsModel();
 
   Future _getApprovalResults() async {
-    await ConnectAPI().get('approval-results').then((value) {
+    await ConnectAPI().get('reject-results').then((value) {
       if (value.statusCode == 200 && jsonDecode(value.body)['status'] == true) {
         setState(() {
-          //String data = jsonEncode(jsonDecode(value.body)['data']);
-          _approvalResultsModel = approvalResultsModelFromJson(value.body);
-          //print(_approvalResultsModel.data!.length);
+          _rejectResultsModel = receiveResultsModelFromJson(value.body);
         });
       }
       //this.setDataAddress();
@@ -58,29 +57,28 @@ class _ApprovalResultsState extends State<ApprovalResults> {
                 text: 'ผลการพิจารณา',
               ),
               Mysutitle(
-                text: 'แบบสรุปผลการพิจารณาอนุมัติการขอยืมอุปกรณ์ฯ ทก.09',
+                text: 'แบบสรุปผลการพิจารณาอนุมัติการขอรับอุปกรณ์ฯ ทก.12',
                 vertical: 5,
               ),
               Column(
-                children: _approvalResultsModel.data?.map((e) {
-                  int index = _approvalResultsModel.data!.indexOf(e) + 1;
-                      return MyCardItem(
-                        no: '$index',
-                        number: '${e.id ?? ''}',
-                        name:
-                            '${e.category?.name ?? ''}\n${e.asset?.description ?? ''}',
-                        unit: '1 หน่วย',
-                        id: '${e.asset?.code ?? ''}',
-                        startdate: e.approveDate == null
-                            ? ''
-                            : '${DateFormat('dd-MM-yyyy HH:mm:ss').format(e.approveDate!.toLocal())}',
-                        //enddate: '1 ต.ค. 2563 09:26',
-                        onTap: () => _gotoWeb(
-                            (_approvalResultsModel.filePath ?? '') +
-                                '/' +
-                                e.id.toString()),
-                      );
-                    }).toList() ??
+                children: _rejectResultsModel.data?.map((e) {
+                  int index = _rejectResultsModel.data!.indexOf(e) + 1;
+                  return MyCardItem(
+                    no: '$index',
+                    number: '${e.id ?? ''}',
+                    name:
+                    '${e.form02Lists?.category?.name ?? ''}\n${e.form02Lists?.asset?.description ?? ''}',
+                    unit: '1 หน่วย',
+                    id: '${e.form02Lists?.asset?.code ?? ''}',
+                    startdate: e.approveDate == null
+                        ? ''
+                        : '${DateFormat('dd-MM-yyyy HH:mm:ss').format(e.approveDate!.toLocal())}',
+                    onTap: () => _gotoWeb(
+                        (_rejectResultsModel.filePath ?? '') + "/receive"
+                            '/' +
+                            e.id.toString()),
+                  );
+                }).toList() ??
                     [],
               )
             ],
@@ -90,6 +88,7 @@ class _ApprovalResultsState extends State<ApprovalResults> {
     );
   }
 }
+
 
 class MyCardItem extends StatelessWidget {
   final String? no, number, name, unit, id, startdate, enddate, nameuser;
@@ -136,7 +135,7 @@ class MyCardItem extends StatelessWidget {
             Row(
               children: [Text("รหัสอุปกรณ์")],
             ),
-            //MyWidget.buildSizedBox('h', 8),
+
             Row(
               children: [
                 Text("$id"),
@@ -158,66 +157,29 @@ class MyCardItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ),
-                /*Expanded(
-                  child: Column(
-                    children: [
-                      Text(
-                        'วัน/เวลา ที่ส่ง',
-                        style: Theme.of(context).textTheme.subtitle,
-                      ),
-                      Text('$enddate',
-                          style: Theme.of(context).textTheme.subtitle),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                  ),
-                ),*/
+
               ],
             ),
-            // MyWidget.buildSizedBox('h', 8),
-            /*Container(
-              width: MediaQuery.of(context).size.width,
-              child:
-              Text('ผู้ยืม', style: Theme.of(context).textTheme.subtitle),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Text('$nameuser',
-                  style: Theme.of(context).textTheme.subtitle),
-            ),*/
+
             MyWidget.buildSizedBox('h', 8),
             Container(
-              //alignment: Alignment.centerRight,
+
               width: MediaQuery.of(context).size.width,
-              child: Text('เอกสารดาวน์โหลด',
+              child: Text('เอกสาร ทก.02',
                   style: Theme.of(context).textTheme.subtitle),
             ),
             MyWidget.buildSizedBox('h', 8),
             Container(
               width: MediaQuery.of(context).size.width,
               child: Row(
-                //mainAxisAlignment: MainAxisAlignment.end,
+
                 children: [
                   Mybtnred(text: 'ดูเอกสาร', onTap: onTap),
-                  /*MyWidget.buildSizedBox('w', 8),
-                  Mybtnred(text: 'หนังสือค้ำประกัน', onTap: () {}),
-                  MyWidget.buildSizedBox('w', 8),
-                  Mybtnred(text: 'แบบฟอร์ม ทก.05', onTap: () {}),*/
-                  // MyWidget.buildSizedBox('w', 8),
+
                 ],
               ),
             ),
-            /*MyWidget.buildSizedBox('h', 14),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              child: Text('ดำเนินการ',
-                  style: Theme.of(context).textTheme.subtitle),
-            ),
-            MyWidget.buildSizedBox('h', 5),
-            Row(
-              children: [
-                Mybtngreen(text: 'อัพโหลดเอกสาร', onTap: () {}),
-              ],
-            )*/
+
           ],
         ),
       ),
@@ -276,3 +238,4 @@ class Mybtnred extends StatelessWidget {
     );
   }
 }
+

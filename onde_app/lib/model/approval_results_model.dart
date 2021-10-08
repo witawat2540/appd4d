@@ -99,36 +99,41 @@ class Datum {
   Asset? asset;
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-        id: json["id"],
-        userId: json["user_id"],
-        substituteId: json["substitute_id"],
-        assetId: json["asset_id"],
-        assetCategoriesId: json["asset_categories_id"],
-        typeStatus: json["type_status"],
-        sendStatus: json["send_status"],
-        sendDate: DateTime.parse(json["send_date"]),
-        objective: json["objective"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        deletedAt: json["deleted_at"],
-        office: json["office"],
-        city: json["city"],
-        remark: json["remark"],
-        image: json["image"],
-        auditDate: DateTime.parse(json["audit_date"]),
-        approveDate: DateTime.parse(json["approve_date"]),
-        form07SId: json["form07s_id"],
-        form09SId: json["form09s_id"],
-        form10SId: json["form10s_id"],
-        form05SId: json["form05s_id"],
-        form13SId: json["form13s_id"],
-        docNotifiesId: json["doc_notifies_id"],
-        docContractsId: json["doc_contracts_id"],
-        docGarunteeId: json["doc_garuntee_id"],
-        reason: json["reason"],
-        category: Category.fromJson(json["category"]),
-        asset: json["asset"] == null ? null : Asset.fromJson(json["asset"]),
-      );
+    id: json["id"],
+    userId: json["user_id"],
+    substituteId: json["substitute_id"],
+    assetId: json["asset_id"],
+    assetCategoriesId: json["asset_categories_id"],
+    typeStatus: json["type_status"],
+    sendStatus: json["send_status"],
+    sendDate: DateTime.parse(json["send_date"]),
+    objective: json["objective"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+    deletedAt: json['deleted_at'] == null ? null : DateTime.parse(json['deleted_at']),
+    office: json["office"],
+    city: json["city"],
+    remark: json["remark"],
+    image: json["image"],
+    auditDate: DateTime.parse(json["audit_date"]),
+    approveDate: DateTime.parse(json["approve_date"]),
+    form07SId: json["form07s_id"],
+    form09SId: json["form09s_id"],
+    form10SId: json["form10s_id"],
+    form05SId: json["form05s_id"],
+    form13SId: json["form13s_id"],
+    docNotifiesId: json["doc_notifies_id"],
+    docContractsId: json["doc_contracts_id"],
+    docGarunteeId: json["doc_garuntee_id"],
+    reason: json["reason"],
+    category: json['category'] != null
+        ? new Category.fromJson(json['category'])
+        : null,
+    asset: json['asset'] != null
+        ? new Asset.fromJson(json['asset'])
+        : null
+  );
+
 
   Map<String, dynamic> toJson() => {
         "id": id,

@@ -1,50 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:onde_app/model/approval_results_model.dart';
-import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/service/mywidget.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class ApprovalResults extends StatefulWidget {
-  const ApprovalResults({Key? key}) : super(key: key);
+
+class Form05sDone extends StatefulWidget {
+  const Form05sDone({Key? key}) : super(key: key);
 
   @override
-  _ApprovalResultsState createState() => _ApprovalResultsState();
+  _Form05sDoneState createState() => _Form05sDoneState();
 }
 
-class _ApprovalResultsState extends State<ApprovalResults> {
-  ApprovalResultsModel _approvalResultsModel = ApprovalResultsModel();
-
-  Future _getApprovalResults() async {
-    await ConnectAPI().get('approval-results').then((value) {
-      if (value.statusCode == 200 && jsonDecode(value.body)['status'] == true) {
-        setState(() {
-          //String data = jsonEncode(jsonDecode(value.body)['data']);
-          _approvalResultsModel = approvalResultsModelFromJson(value.body);
-          //print(_approvalResultsModel.data!.length);
-        });
-      }
-      //this.setDataAddress();
-    });
-  }
-
-  Future<void> _gotoWeb(String url) async {
-    //print(url);
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
-  @override
-  void initState() {
-    this._getApprovalResults();
-    super.initState();
-  }
-
+class _Form05sDoneState extends State<Form05sDone> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,34 +20,32 @@ class _ApprovalResultsState extends State<ApprovalResults> {
           child: Column(
             children: [
               Mytitle(
-                text: 'ผลการพิจารณา',
+                text: 'จัดการเอกสาร',
               ),
               Mysutitle(
-                text: 'แบบสรุปผลการพิจารณาอนุมัติการขอยืมอุปกรณ์ฯ ทก.09',
+                text: 'เอกสารสัญญา/หนังสือค้ำประกัน ดำเนินการแล้ว',
                 vertical: 5,
               ),
-              Column(
-                children: _approvalResultsModel.data?.map((e) {
-                  int index = _approvalResultsModel.data!.indexOf(e) + 1;
-                      return MyCardItem(
-                        no: '$index',
-                        number: '${e.id ?? ''}',
-                        name:
-                            '${e.category?.name ?? ''}\n${e.asset?.description ?? ''}',
-                        unit: '1 หน่วย',
-                        id: '${e.asset?.code ?? ''}',
-                        startdate: e.approveDate == null
-                            ? ''
-                            : '${DateFormat('dd-MM-yyyy HH:mm:ss').format(e.approveDate!.toLocal())}',
-                        //enddate: '1 ต.ค. 2563 09:26',
-                        onTap: () => _gotoWeb(
-                            (_approvalResultsModel.filePath ?? '') +
-                                '/' +
-                                e.id.toString()),
-                      );
-                    }).toList() ??
-                    [],
-              )
+              MyCarddoc(
+                no: '1',
+                number: '33',
+                name: 'เครื่องคอมพิวเตอร์แบบตั้งโต๊ะ',
+                unit: '1 หน่วย',
+                id: '01293847593845',
+                startdate: '1 ต.ค. 2563 09:26',
+                enddate: '1 ต.ค. 2563 09:26',
+                nameuser: 'ดอกไม้ ทดสอบ',
+              ),
+              MyCarddoc(
+                no: '2',
+                number: '34',
+                name: 'เครื่องคอมพิวเตอร์แบบตั้งโต๊ะ',
+                unit: '1 หน่วย',
+                id: '01293847593845',
+                startdate: '1 ต.ค. 2563 09:26',
+                enddate: '1 ต.ค. 2563 09:26',
+                nameuser: 'ดอกไม้ ทดสอบ',
+              ),
             ],
           ),
         ),
@@ -91,11 +54,10 @@ class _ApprovalResultsState extends State<ApprovalResults> {
   }
 }
 
-class MyCardItem extends StatelessWidget {
+class MyCarddoc extends StatelessWidget {
   final String? no, number, name, unit, id, startdate, enddate, nameuser;
-  final VoidCallback? onTap;
 
-  const MyCardItem({
+  const MyCarddoc({
     Key? key,
     this.no,
     this.number,
@@ -105,7 +67,6 @@ class MyCardItem extends StatelessWidget {
     this.startdate,
     this.enddate,
     this.nameuser,
-    this.onTap,
   }) : super(key: key);
 
   @override
@@ -129,18 +90,12 @@ class MyCardItem extends StatelessWidget {
                   //color: Colors.black12,
                   child: Text('$name'),
                 ),
-                Text('$unit')
+                // Text('$unit')
               ],
             ),
             MyWidget.buildSizedBox('h', 8),
             Row(
-              children: [Text("รหัสอุปกรณ์")],
-            ),
-            //MyWidget.buildSizedBox('h', 8),
-            Row(
-              children: [
-                Text("$id"),
-              ],
+              children: [Text("$id")],
             ),
             MyWidget.buildSizedBox('h', 8),
             Row(
@@ -149,7 +104,7 @@ class MyCardItem extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(
-                        'วัน/เวลา ที่อนุมัติ',
+                        'วันเวลาที่อนุมัติ',
                         style: Theme.of(context).textTheme.subtitle,
                       ),
                       Text('$startdate',
@@ -158,11 +113,11 @@ class MyCardItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ),
-                /*Expanded(
+                Expanded(
                   child: Column(
                     children: [
                       Text(
-                        'วัน/เวลา ที่ส่ง',
+                        'ช่วงเวลาที่ให้ยืม',
                         style: Theme.of(context).textTheme.subtitle,
                       ),
                       Text('$enddate',
@@ -170,11 +125,11 @@ class MyCardItem extends StatelessWidget {
                     ],
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
-                ),*/
+                ),
               ],
             ),
-            // MyWidget.buildSizedBox('h', 8),
-            /*Container(
+            MyWidget.buildSizedBox('h', 8),
+            Container(
               width: MediaQuery.of(context).size.width,
               child:
               Text('ผู้ยืม', style: Theme.of(context).textTheme.subtitle),
@@ -183,10 +138,9 @@ class MyCardItem extends StatelessWidget {
               width: MediaQuery.of(context).size.width,
               child: Text('$nameuser',
                   style: Theme.of(context).textTheme.subtitle),
-            ),*/
+            ),
             MyWidget.buildSizedBox('h', 8),
             Container(
-              //alignment: Alignment.centerRight,
               width: MediaQuery.of(context).size.width,
               child: Text('เอกสารดาวน์โหลด',
                   style: Theme.of(context).textTheme.subtitle),
@@ -195,18 +149,17 @@ class MyCardItem extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width,
               child: Row(
-                //mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Mybtnred(text: 'ดูเอกสาร', onTap: onTap),
-                  /*MyWidget.buildSizedBox('w', 8),
+                  Mybtnred(text: 'สัญญา', onTap: () {}),
+                  MyWidget.buildSizedBox('w', 8),
                   Mybtnred(text: 'หนังสือค้ำประกัน', onTap: () {}),
                   MyWidget.buildSizedBox('w', 8),
-                  Mybtnred(text: 'แบบฟอร์ม ทก.05', onTap: () {}),*/
+                  Mybtnred(text: 'แบบฟอร์ม ทก.05', onTap: () {}),
                   // MyWidget.buildSizedBox('w', 8),
                 ],
               ),
             ),
-            /*MyWidget.buildSizedBox('h', 14),
+            MyWidget.buildSizedBox('h', 14),
             Container(
               width: MediaQuery.of(context).size.width,
               child: Text('ดำเนินการ',
@@ -215,9 +168,15 @@ class MyCardItem extends StatelessWidget {
             MyWidget.buildSizedBox('h', 5),
             Row(
               children: [
-                Mybtngreen(text: 'อัพโหลดเอกสาร', onTap: () {}),
+                Mybtngreen(text: 'ดูรายละเอียด', onTap: () {}),
               ],
-            )*/
+            ),
+            MyWidget.buildSizedBox('h', 5),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              child: Text('02 ต.ค. 2564 17:21:16',
+                  style: Theme.of(context).textTheme.subtitle),
+            )
           ],
         ),
       ),
@@ -253,7 +212,7 @@ class Mybtngreen extends StatelessWidget {
 
 class Mybtnred extends StatelessWidget {
   final String text;
-  final Function()? onTap;
+  final VoidCallback onTap;
 
   const Mybtnred({
     Key? key,

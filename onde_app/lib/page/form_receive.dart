@@ -83,7 +83,7 @@ class _FormReceiveState extends State<FormReceive> {
                     no: '$index',
                     num: '${e.form?.id ?? ''}',
                     unit: '1 หน่วย',
-                    name: 'อุปกรณ์ ${e.asset ??'0'}',
+                    name: 'อุปกรณ์ ${e.asset ?? '0' }',
                     onTapSend: () => _sendAuditorFormReceive(e.form!.id!.toInt()),
                     url: 'receive/'+e.form!.id.toString(),
                     sendStatus: e.form!.sendDate == null ? true:false,
@@ -96,6 +96,7 @@ class _FormReceiveState extends State<FormReceive> {
                   );
                 }).toList() ?? [],
               ),
+              MyWidget.buildSizedBox('h', 10),
               Mybtn(
                 text: 'สร้างแบบ ทก.02',
                 color: Colors.green,

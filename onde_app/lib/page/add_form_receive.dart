@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:onde_app/model/form_add_receive_model.dart';
+import 'package:onde_app/network/connect.dart';
 import 'package:onde_app/page/adddevice_02.dart';
 import 'package:onde_app/service/mytextfild.dart';
 import 'package:onde_app/service/myunitity.dart';
@@ -18,6 +19,7 @@ class _AddFromReceiveState extends State<AddFromReceive> {
   AddFormReceiveModel _addFromReceiveModel = AddFormReceiveModel();
   ImagePicker _picker = ImagePicker();
   GlobalKey<ScaffoldState> _keyScaffold = GlobalKey<ScaffoldState>();
+  GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
 
   Future<XFile?> getImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -30,6 +32,42 @@ class _AddFromReceiveState extends State<AddFromReceive> {
     }
   }
 
+  Future sendAddFormReceive() async {
+    if (_keyForm.currentState!.validate()) {
+      //_addFromReceiveModel.accessorieList = [];
+      _addFromReceiveModel.image = [];
+
+      await _addFromReceiveModel.setFile();
+      //print(_addFromReceiveModel.accessorieList);
+      if(_addFromReceiveModel.accessorieList.isNotEmpty){
+        await ConnectAPI()
+            .httpMultiFormHeaders(
+          _addFromReceiveModel.toJson(),
+          _addFromReceiveModel.image,
+          'create-form-receive',
+        )
+            .then((value) async {
+          //print(value.stream);
+          if (value.statusCode == 200) {
+            Navigator.pop(context, true);
+            //print(await value.stream.bytesToString());
+          } else {
+            //print(await value.stream.bytesToString());
+            MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white,
+                _keyScaffold, Colors.redAccent, 2, Icons.close);
+          }
+        } ).catchError((onError) {
+          print(onError);
+          MyWidget.showInSnackBar('เกิดข้อผิดพลาด', Colors.white,
+              _keyScaffold, Colors.redAccent, 2, Icons.close);
+        });
+      }else{
+        MyWidget.showInSnackBar('กรุณาเพิ่มอุปกรณ์', Colors.white,
+            _keyScaffold, Colors.redAccent, 2, Icons.close);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +77,7 @@ class _AddFromReceiveState extends State<AddFromReceive> {
         padding: const EdgeInsets.all(15.0),
         child: Form(
           autovalidateMode: AutovalidateMode.onUserInteraction,
-          //key: _keyForm,
+          key: _keyForm,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -193,13 +231,13 @@ class _AddFromReceiveState extends State<AddFromReceive> {
                       if(_addFromReceiveModel.accessorieName.where((element) => element == value['name']).isEmpty){
                         _addFromReceiveModel.accessorieList.add(value['id']);
                         _addFromReceiveModel.accessorieName.add(value['name']);
+                      }else{
+                        MyWidget.showInSnackBar('มีอุปกรณ์นี้แล้ว', Colors.white,
+                            _keyScaffold, Colors.redAccent, 2, Icons.close);
                       }
                       setState(() {
 
                       });
-                      //print(_addFromReceiveModel.accessorieList);
-                      //print(_addFromReceiveModel.accessorieName);
-                      //print(value['id']);
                     }
                   }),
                   color: Colors.green,
@@ -241,8 +279,8 @@ class _AddFromReceiveState extends State<AddFromReceive> {
               Expanded(
                 child: Mybtn(
                   text: 'ส่งข้อมูล',
-                  //ontap: () => sendAddFormBorrow(),
-                  ontap: () {},
+                  ontap: () => sendAddFormReceive(),
+                  //ontap: () {},
                   color: Colors.green,
                 ),
               ),
